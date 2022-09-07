@@ -1,0 +1,9 @@
+read1: /projects/ps-yeolab5/hsher/Tao_circSTAMP/test_data/quant/test_1.fq.gz
+read2: /projects/ps-yeolab5/hsher/Tao_circSTAMP/test_data/quant/test_2.fq.gz
+name: test
+
+GTF: /projects/ps-yeolab5/hsher/Tao_circSTAMP/test_data/quant/chr1.gtf
+GENOMEFA: /projects/ps-yeolab5/hsher/Tao_circSTAMP/test_data/quant/chr1.fa
+BWA_INDEX: /projects/ps-yeolab5/hsher/Tao_circSTAMP/bwa_test
+HISAT_INDEX: /projects/ps-yeolab5/hsher/Tao_circSTAMP/hisat_test
+INDEX_NAME: HG19_TEST
