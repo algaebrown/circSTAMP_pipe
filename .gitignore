@@ -1,0 +1,8 @@
+.snakemake
+benchmarks
+error_files
+fastQC
+output
+QC
+*.ipynb_checkpoints
+test/
