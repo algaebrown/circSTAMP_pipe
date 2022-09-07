@@ -1,0 +1,12 @@
+name: hg19
+tools:
+  bwa: ./bwa
+  hisat2: ./hisat2
+  stringtie: ./stringtie
+  samtools: ./samtools
+
+reference:
+  fasta: /projects/ps-yeolab5/hsher/Tao_circSTAMP/test_data/quant/chr1.fa
+  gtf: /projects/ps-yeolab5/hsher/Tao_circSTAMP/test_data/quant/chr1.gtf
+  bwa_index: /projects/ps-yeolab5/hsher/Tao_circSTAMP/bwa_test
+  hisat_index: /projects/ps-yeolab5/hsher/Tao_circSTAMP/hisat_test

@@ -1,0 +1,13 @@
+name: hg38_gencode_v35
+tools:
+  bwa: /oasis/tscc/scratch/hsher/circSTAMP_pipe/.snakemake/conda/7e82532cde3c417917a71a3159af3439/bin/bwa
+  hisat2: /oasis/tscc/scratch/hsher/circSTAMP_pipe/.snakemake/conda/7e82532cde3c417917a71a3159af3439/bin/hisat2
+  stringtie: /oasis/tscc/scratch/hsher/circSTAMP_pipe/.snakemake/conda/7e82532cde3c417917a71a3159af3439/bin/stringtie
+  samtools: /oasis/tscc/scratch/hsher/circSTAMP_pipe/.snakemake/conda/7e82532cde3c417917a71a3159af3439/bin/samtools
+
+reference:
+  fasta: /home/hsher/gencode_coords/GRCh38.primary_assembly.genome.fa
+  gtf: /home/hsher/gencode_coords/gencode.v35.basic.annotation.gtf
+  bwa_index: /projects/ps-yeolab5/hsher/Tao_circSTAMP/bwa_gencode35
+  hisat_index: /projects/ps-yeolab5/hsher/Tao_circSTAMP/hisat_gencode35
+
