@@ -1,0 +1,13 @@
+,Sample,fastq1,fastq2,Rnase
+0,HuR-50-R,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/HuR-50-R.1.fastq.gz,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/HuR-50-R.2.fastq.gz,True
+1,APO-1-A,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/APO-1-A.1.fastq.gz,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/APO-1-A.2.fastq.gz,False
+2,APO-50-A,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/APO-50-A.1.fastq.gz,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/APO-50-A.2.fastq.gz,False
+3,APO-noD-R,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/APO-noD-R.1.fastq.gz,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/APO-noD-R.2.fastq.gz,True
+4,HuR-noD-R,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/HuR-noD-R.1.fastq.gz,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/HuR-noD-R.2.fastq.gz,True
+5,HuR-noD-A,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/HuR-noD-A.1.fastq.gz,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/HuR-noD-A.2.fastq.gz,False
+6,APO-noD-A,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/APO-noD-A.1.fastq.gz,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/APO-noD-A.2.fastq.gz,False
+7,HuR-50-A,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/HuR-50-A.1.fastq.gz,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/HuR-50-A.2.fastq.gz,False
+8,HuR-1-A,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/HuR-1-A.1.fastq.gz,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/HuR-1-A.2.fastq.gz,False
+9,APO-50-R,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/APO-50-R.1.fastq.gz,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/APO-50-R.2.fastq.gz,True
+10,APO-1-R,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/APO-1-R.1.fastq.gz,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/APO-1-R.2.fastq.gz,True
+11,HuR-1-R,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/HuR-1-R.1.fastq.gz,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/HuR-1-R.2.fastq.gz,True
