@@ -16,6 +16,24 @@ For a pair of polyA depleted (`-A`) samples and the RNase-treated (`-R`) samples
 
 This will generate .bam files that can be fed into the STAMP pipeline.
 
+## Configuration
+see `config/tao.yaml`
+
+the `menifest`:
+- Sample: the sample name. Each sample is composed of `prefix` and `suffix`. Suffix can be `-R`(RNase treated). `-A`(not RNase treated). Each prefix must have a pair of samples with two suffixes (this is how CIRI2 runs quantification). If you don't design it this way, comment out `SnakeMain`, rule `all`, line `"output/{sample_pair}.gtf"` to distable RNaseR correction step from CIRI2.
+- fastq1, fastq2: full path to fastq.gz files, read1 and read2.
+- Rnase, binary variable indicating Rnase treatment is done or not
+
+the rest:
+- bunch of index and annotations. Yeolab users don't need to change these.
+- if you need to build your own, see `SnakeBuildIndex`. Make sure to change the config file as well as `ciriconfig.yaml`.
+
+## Output
+
+- `QC/` folder contain quality control statistics
+- fastQC contain quality control statistics
+- `output/*.gtf` are the CIRI outputs. `{sample_label}.gtf` is the unadjusted quantification. `{total_sample_label}.{rnase_sample_label}.gtf` is the RNase-R corrected quantification.
+
 # STAMP: Sailor pipeline
 ## Running STAMP on regular RNA-seq (human genome mapped reads)
 generates the STAMP configs. `sailor.json`
