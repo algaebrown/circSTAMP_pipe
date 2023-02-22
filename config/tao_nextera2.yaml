@@ -1,0 +1,29 @@
+# read1: /projects/ps-yeolab5/hsher/Tao_circSTAMP/test_data/quant/test_1.fq.gz
+# read2: /projects/ps-yeolab5/hsher/Tao_circSTAMP/test_data/quant/test_2.fq.gz
+# name: test
+workdir: /home/hsher/scratch/circ_nextera_iter2
+menifest: /home/hsher/scratch/circSTAMP_pipe/notebook/nextera_iter2.csv
+
+GTF: /home/hsher/gencode_coords/gencode.v35.basic.annotation.gff3  
+GENOMEFA: /home/hsher/gencode_coords/GRCh38.primary_assembly.genome.fa
+GENOMEFAI: /home/hsher/gencode_coords/GRCh38.primary_assembly.genome.fa.fai
+BWA_INDEX: /projects/ps-yeolab5/hsher/Tao_circSTAMP/bwa_gencode35
+HISAT_INDEX: /projects/ps-yeolab5/hsher/Tao_circSTAMP/hisat_gencode35
+STAR_INDEX: /projects/ps-yeolab5/hsher/Tao_circSTAMP/star_2_7_gencode35
+INDEX_NAME: HG38
+
+
+READ1_ADAPTOR: /home/hsher/scratch/circSTAMP_pipe/input/nextera.fasta
+READ2_ADAPTOR:  /home/hsher/scratch/circSTAMP_pipe/input/nextera.fasta
+
+# settings for Ciri
+CIRICONFIG: /home/hsher/scratch/circSTAMP_pipe/ciriconfig_full.yaml
+LIBRARY_TYPE: 2 #Library type, 0: unstranded, 1: read1 match the sense strand, 2: read1 match the antisense strand (default: 0)
+
+# ANALYSIS # cut -f 1,2 genome.fa.fai > chrom.sizes
+CHROM_SIZE: /home/hsher/gencode_coords/GRCh38.primary_assembly.chrom.sizes
+ANNOTATOR_SPECIES: GRCh38
+GTFDB: /home/hsher/gencode_coords/gencode.v35.gtf.db
+edit_thres: 0.9999
+EXPAND_LEN: 30
+

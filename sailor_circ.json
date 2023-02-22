@@ -1,0 +1,8 @@
+{"samples_path": "output/circ/", 
+    "samples": ["HuR-50-R_denovo.sorted.bam"], 
+    "remove_duplicates": false, "junction_overhang": 10, 
+    "edge_mutation": 5, "non_ag": 1, "reverse_stranded": true, 
+    "reference_fasta": "/home/hsher/scratch/circSTAMP_pipe/output/circ/HuR-50-R_index.fa", 
+    "dp": "DP4", "min_variant_coverage": 5, "known_snps": "/home/hsher/scratch/circSTAMP_pipe/circ_snp.bed", 
+    "edit_type": "ct", "edit_fraction": 0.01, "alpha": 0, "beta": 0, "keep_all_edited": false, 
+    "output_dir": "output/sailor_circ", "snakemake_dir_path": "/projects/ps-yeolab3/ekofman/sc_STAMP_pipeline/STAMP/", "config_path": "sailor_circ.json"}
