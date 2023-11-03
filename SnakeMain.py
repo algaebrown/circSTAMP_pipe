@@ -1,4 +1,4 @@
-#snakemake -s SnakeMain.py -j 12 --configfile config/tao_nextera13.yaml --cluster "qsub -l walltime={params.run_time} -l nodes=1:ppn={params.cores} -e {params.error_out_file} -q home-yeo" --use-conda --conda-prefix /home/hsher/snakeconda -n
+#snakemake -s SnakeMain.py -j 12 --configfile config/tao_nextera2.yaml --cluster "qsub -l walltime={params.run_time} -l nodes=1:ppn={params.cores} -e {params.error_out_file} -q home-yeo" --use-conda --conda-prefix /home/hsher/snakeconda -n
 #snakemake -s SnakeMain.py -j 12 --configfile config/tao_truseq3.yaml --cluster "qsub -l walltime={params.run_time} -l nodes=1:ppn={params.cores} -e {params.error_out_file} -q home-yeo" --use-conda --conda-prefix /home/hsher/snakeconda
 #snakemake -s SnakeMain.py -j 12 --configfile config/tao.yaml --cluster "qsub -l walltime={params.run_time} -l nodes=1:ppn={params.cores} -e {params.error_out_file} -q home-yeo" --use-conda --conda-prefix /home/hsher/snakeconda
 import pandas as pd
@@ -13,6 +13,10 @@ workdir: config['workdir']
 if config['fit_overdispersion_from'] is None:
     config['fit_overdispersion_from'] = []
 
+if 'STAMP' not in config:
+    config['STAMP']=[]
+if 'STAMP_control' not in config:
+    config['STAMP_control'] = []
 if config['STAMP'] is None:
     config['STAMP'] = []
 
