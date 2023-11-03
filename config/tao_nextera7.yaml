@@ -4,7 +4,7 @@
 # this one is the rar11 for different cell lines
 # it is the rar11, IGF and U2 STAMP thing
 workdir: /home/hsher/scratch/circ_nextera_iter7
-menifest: /home/hsher/scratch/circSTAMP_pipe/notebook/nextera_iter7_celllines_rar11.csv
+menifest: /home/hsher/projects/circSTAMP_pipe/notebook/nextera_iter7_celllines_rar11.csv
 
 GTF: /home/hsher/gencode_coords/gencode.v35.basic.annotation.gff3  
 GENOMEFA: /home/hsher/gencode_coords/GRCh38.primary_assembly.genome.fa
@@ -19,7 +19,7 @@ READ1_ADAPTOR: /home/hsher/scratch/circSTAMP_pipe/input/nextera.fasta
 READ2_ADAPTOR:  /home/hsher/scratch/circSTAMP_pipe/input/nextera.fasta
 
 # settings for Ciri
-CIRICONFIG: /home/hsher/scratch/circSTAMP_pipe/ciriconfig_full.yaml
+CIRICONFIG: /home/hsher/projects/circSTAMP_pipe/ciriconfig_full.yaml
 LIBRARY_TYPE: 2 #Library type, 0: unstranded, 1: read1 match the sense strand, 2: read1 match the antisense strand (default: 0)
 
 # ANALYSIS # cut -f 1,2 genome.fa.fai > chrom.sizes
@@ -29,3 +29,18 @@ GTFDB: /home/hsher/gencode_coords/gencode.v35.gtf.db
 edit_thres: 0.9999
 EXPAND_LEN: 30
 
+CIRCRIP_PATH: /home/hsher/bin/circRIP # where you downloaded https://github.com/bioinfolabwhu/circRIP/
+R_EXE: /projects/ps-yeolab4/software/R-4.1.2/bin/Rscript
+
+SCRIPT_PATH: /home/hsher/projects/circSTAMP_pipe/scripts
+RIP_comparison: # Here you specify what to use a background and what to use as input, these names have to be in manifest['Sample']
+fit_overdispersion_from: 
+
+# STAMP
+STAMP:
+
+
+STAMP_control:
+
+
+external_stamp_control:

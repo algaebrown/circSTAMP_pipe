@@ -2,7 +2,7 @@
 # read2: /projects/ps-yeolab5/hsher/Tao_circSTAMP/test_data/quant/test_2.fq.gz
 # name: test
 workdir: /home/hsher/scratch/circ_truseq_iter2
-menifest: /home/hsher/scratch/circSTAMP_pipe/notebook/trueseq_iter2.csv
+menifest: /home/hsher/projects/circSTAMP_pipe/notebook/trueseq_iter2.csv
 RBP: HuR
 
 GTF: /home/hsher/gencode_coords/gencode.v35.basic.annotation.gff3  
@@ -14,11 +14,11 @@ STAR_INDEX: /projects/ps-yeolab5/hsher/Tao_circSTAMP/star_2_7_gencode35
 INDEX_NAME: HG38
 
 
-READ1_ADAPTOR: /home/hsher/scratch/circSTAMP_pipe/input/truseq_fwd.fasta
-READ2_ADAPTOR:  /home/hsher/scratch/circSTAMP_pipe/input/truseq_rev.fasta
+READ1_ADAPTOR: /home/hsher/projects/circSTAMP_pipe/input/truseq_fwd.fasta
+READ2_ADAPTOR:  /home/hsher/projects/circSTAMP_pipe/input/truseq_rev.fasta
 
 # settings for Ciri
-CIRICONFIG: /home/hsher/scratch/circSTAMP_pipe/ciriconfig_full.yaml
+CIRICONFIG: /home/hsher/projects/circSTAMP_pipe/ciriconfig_full.yaml
 LIBRARY_TYPE: 2 #Library type, 0: unstranded, 1: read1 match the sense strand, 2: read1 match the antisense strand (default: 0)
 
 # ANALYSIS # cut -f 1,2 genome.fa.fai > chrom.sizes
