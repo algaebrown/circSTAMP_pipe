@@ -13,6 +13,12 @@ workdir: config['workdir']
 if config['fit_overdispersion_from'] is None:
     config['fit_overdispersion_from'] = []
 
+if config['STAMP'] is None:
+    config['STAMP'] = []
+
+if config['STAMP_control'] is None:
+    config['STAMP_control'] = []
+
 
 try:
     os.mkdir('error_files')

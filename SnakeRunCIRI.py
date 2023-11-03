@@ -24,6 +24,7 @@ rule run_ciri_RNASE:
         # "output/circ/{sample_label}.ciri",
         #expand("output/circ/{sample_label}_index.{number}.ht2", number = list(range(20)), allow_missing=True),
         "output/circ/{sample_label}_index.fa",
+        "output/circ/{sample_label}_index.fa.fai",
         "output/circ/{sample_label}_denovo.sorted.bam",
         "output/circ/{sample_label}_denovo.sorted.bam.bai",
     params:
