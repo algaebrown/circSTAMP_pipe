@@ -5,7 +5,8 @@ workdir: /home/hsher/scratch/circ_truseq
 menifest: /home/hsher/scratch/circSTAMP_pipe/notebook/trueseq.csv
 RBP: HuR
 
-GTF: /home/hsher/gencode_coords/gencode.v35.basic.annotation.gff3  
+GFF: /home/hsher/gencode_coords/gencode.v35.basic.annotation.gff3  
+GTF: /home/hsher/gencode_coords/gencode.v35.basic.annotation.gtf 
 GENOMEFA: /home/hsher/gencode_coords/GRCh38.primary_assembly.genome.fa
 GENOMEFAI: /home/hsher/gencode_coords/GRCh38.primary_assembly.genome.fa.fai
 BWA_INDEX: /projects/ps-yeolab5/hsher/Tao_circSTAMP/bwa_gencode35
@@ -28,3 +29,9 @@ GTFDB: /home/hsher/gencode_coords/gencode.v35.gtf.db
 edit_thres: 0.9999
 EXPAND_LEN: 30
 
+# circRIP
+SCRIPT_PATH: /home/hsher/projects/circSTAMP_pipe/scripts
+CIRCRIP_PATH: /home/hsher/bin/circRIP # where you downloaded https://github.com/bioinfolabwhu/circRIP/
+
+RIP_comparison: # Here you specify what to use a background and what to use as input, these names have to be in manifest['Sample']
+  

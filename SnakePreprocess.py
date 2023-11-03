@@ -104,3 +104,49 @@ rule index_bams:
     shell:
         "module load samtools;"
         "samtools index {input.bam};"
+
+rule quantify_linear:
+    input:
+        bams = expand("output/bams/{sample_label}.Aligned.sortedByCoord.out.bam",sample_label = manifest['Sample']),
+        bais = expand("output/bams/{sample_label}.Aligned.sortedByCoord.out.bam.bai",sample_label = manifest['Sample'])
+    output:
+        "output/featureCount_output.tsv"
+    params:
+        error_out_file = "error_files/indexbam",
+        run_time = "01:40:00",
+        gtf = config['GTF'],
+        cores = "4",
+        memory = "1000",
+        job_name = "index_bam"
+    shell:
+        """
+        module load subreadfeaturecounts
+        featureCounts -p \
+            -a {params.gtf} \
+            -o {output} {input.bams} \
+            -g gene_name
+        """
+
+rule quantify_linear_mRNA:
+    input:
+        bams = expand("output/bams/{sample_label}.Aligned.sortedByCoord.out.bam",sample_label = manifest['Sample']),
+        bais = expand("output/bams/{sample_label}.Aligned.sortedByCoord.out.bam.bai",sample_label = manifest['Sample'])
+    output:
+        "output/featureCount_output_mRNA.tsv"
+    params:
+        error_out_file = "error_files/indexbam",
+        run_time = "01:40:00",
+        gtf = config['GTF'],
+        cores = "4",
+        memory = "1000",
+        job_name = "index_bam"
+    shell:
+        """
+        module load subreadfeaturecounts
+        featureCounts -p \
+            -a {params.gtf} \
+            -o {output} {input.bams} \
+            -g gene_name \
+            -t exon \
+            --splitOnly
+        """

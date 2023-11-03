@@ -27,3 +27,11 @@ GTFDB: /home/hsher/gencode_coords/gencode.v35.gtf.db
 edit_thres: 0.9999
 EXPAND_LEN: 30
 
+# circRIP
+SCRIPT_PATH: /home/hsher/projects/circSTAMP_pipe/scripts
+CIRCRIP_PATH: /home/hsher/bin/circRIP # where you downloaded https://github.com/bioinfolabwhu/circRIP/
+
+RIP_comparison: # Here you specify what to use a background and what to use as input, these names have to be in manifest['Sample']
+R_EXE: /projects/ps-yeolab4/software/R-4.1.2/bin/Rscript
+
+fit_overdispersion_from:
