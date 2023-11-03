@@ -3,5 +3,3 @@
 1,/home/tayu/seqdata/tao/circRNA_seq/circapp/igm-storage.ucsd.edu/230517_A01535_0329_BH75WTDSX7/PP_Polysome1_S7_L002_R1_001.fastq.gz,/home/tayu/seqdata/tao/circRNA_seq/circapp/igm-storage.ucsd.edu/230517_A01535_0329_BH75WTDSX7/PP_Polysome1_S7_L002_R2_001.fastq.gz,PP_Polysome1,True
 2,/home/tayu/seqdata/tao/circRNA_seq/circapp/igm-storage.ucsd.edu/230517_A01535_0329_BH75WTDSX7/PP_Monosome2_S6_L002_R1_001.fastq.gz,/home/tayu/seqdata/tao/circRNA_seq/circapp/igm-storage.ucsd.edu/230517_A01535_0329_BH75WTDSX7/PP_Monosome2_S6_L002_R2_001.fastq.gz,PP_Monosome2,True
 3,/home/tayu/seqdata/tao/circRNA_seq/circapp/igm-storage.ucsd.edu/230517_A01535_0329_BH75WTDSX7/PP_Polysome2_S8_L002_R1_001.fastq.gz,/home/tayu/seqdata/tao/circRNA_seq/circapp/igm-storage.ucsd.edu/230517_A01535_0329_BH75WTDSX7/PP_Polysome2_S8_L002_R2_001.fastq.gz,PP_Polysome2,True
-4,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/PP_Input1.r1.fastq.gz,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/PP_Input1.r2.fastq.gz,PP_Input1,True
-5,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/PP_Input2.r1.fastq.gz,/projects/ps-yeolab5/hsher/Tao_circSTAMP/fastq/PP_Input2.r2.fastq.gz,PP_Input2,True
