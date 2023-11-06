@@ -1,7 +1,6 @@
 # read1: /projects/ps-yeolab5/hsher/Tao_circSTAMP/test_data/quant/test_1.fq.gz
 # read2: /projects/ps-yeolab5/hsher/Tao_circSTAMP/test_data/quant/test_2.fq.gz
 # name: test
-# this one is the candidate for RBP tethering screens
 # it is the rar11, IGF and U2 STAMP thing
 workdir: /home/hsher/scratch/circ_nextera_iter5
 menifest: /home/hsher/projects/circSTAMP_pipe/notebook/nextera_iter5_IGF_U2_rar11.csv
