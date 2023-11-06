@@ -6,3 +6,4 @@ output
 QC
 *.ipynb_checkpoints
 test/
+*.pyc
