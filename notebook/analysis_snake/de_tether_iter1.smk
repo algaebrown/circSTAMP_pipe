@@ -65,7 +65,7 @@ print(manifest.applymap(os.path.isfile).sum(axis = 1))
 print(manifest.applymap(os.path.isfile).sum(axis = 0))
 
 ################ CIRI CONFIG #########################
-config = {'CIRICONFIG': '/home/hsher/scratch/circSTAMP_pipe/ciriconfig_full.yaml',
+config = {'CIRICONFIG': '/home/hsher/projects/circSTAMP_pipe/ciriconfig_full.yaml',
 'LIBRARY_TYPE': 2,
 'BWA_INDEX': '/projects/ps-yeolab5/hsher/Tao_circSTAMP/bwa_gencode35',
 'HISAT_INDEX': '/projects/ps-yeolab5/hsher/Tao_circSTAMP/hisat_gencode35',
