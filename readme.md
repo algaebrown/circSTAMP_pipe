@@ -4,6 +4,17 @@
 - or install snakemake yourself
 
 ## How to run
+On TSCC 2.0, or Slurm system
+```
+snakemake -s SnakeMain.py \
+    -j 12 \
+    --configfile YOUR_CONFIG.yaml \
+    --cluster "sbatch -t {params.run_time} -n {params.cores} -e {params.error_out_file} -q home-yeo" \
+    --use-conda \
+    --conda-prefix SOME_OF_YOUR_PATH_TO_STORE_CONDA
+```
+
+On TSCC 1.0, or PBS/Torque system
 ```
 snakemake -s SnakeMain.py \
     -j 12 \
@@ -12,7 +23,6 @@ snakemake -s SnakeMain.py \
     --use-conda \
     --conda-prefix SOME_OF_YOUR_PATH_TO_STORE_CONDA
 ```
-
 ## Preparing to run, generate config.yaml
 - If you are running the nextera library, see `config/tao_nextera.yaml` as the example
 - If you are running the truseq library, see `config/tao_truseq.yaml` as the example
