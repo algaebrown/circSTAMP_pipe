@@ -1,6 +1,11 @@
-#snakemake -s SnakeMain.py -j 12 --configfile config/tao_nextera2.yaml --cluster "qsub -l walltime={params.run_time} -l nodes=1:ppn={params.cores} -e {params.error_out_file} -q home-yeo" --use-conda --conda-prefix /home/hsher/snakeconda -n
-#snakemake -s SnakeMain.py -j 12 --configfile config/tao_truseq3.yaml --cluster "qsub -l walltime={params.run_time} -l nodes=1:ppn={params.cores} -e {params.error_out_file} -q home-yeo" --use-conda --conda-prefix /home/hsher/snakeconda
-#snakemake -s SnakeMain.py -j 12 --configfile config/tao.yaml --cluster "qsub -l walltime={params.run_time} -l nodes=1:ppn={params.cores} -e {params.error_out_file} -q home-yeo" --use-conda --conda-prefix /home/hsher/snakeconda
+"""
+snakemake -s SnakeMain.py \
+    -j 12 \
+    --configfile config/tao_nextera13.yaml \
+    --cluster "sbatch -t {params.run_time} -n {params.cores} -e {params.error_out_file} -q home-yeo" \
+    --use-conda \
+    --conda-prefix /tscc/nfs/home/hsher/snakeconda
+"""
 import pandas as pd
 manifest = pd.read_csv(config['menifest'])
 print(manifest)
