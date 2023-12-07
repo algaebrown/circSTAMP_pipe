@@ -1,0 +1,46 @@
+# Cell line specific circles, iteration 2
+workdir: /tscc/nfs/home/hsher/scratch/circ_nextera_iter13
+menifest: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/notebook/nextera_iter13_RBM15_U2AF_STAMP.csv
+
+GFF: /tscc/nfs/home/hsher/gencode_coords/gencode.v35.basic.annotation.gff3  
+GTF: /tscc/nfs/home/hsher/gencode_coords/gencode.v35.basic.annotation.gtf  
+GENOMEFA: /tscc/nfs/home/hsher/gencode_coords/GRCh38.primary_assembly.genome.fa
+GENOMEFAI: /tscc/nfs/home/hsher/gencode_coords/GRCh38.primary_assembly.genome.fa.fai
+BWA_INDEX: /projects/ps-yeolab5/hsher/Tao_circSTAMP/bwa_gencode35
+HISAT_INDEX: /projects/ps-yeolab5/hsher/Tao_circSTAMP/hisat_gencode35
+STAR_INDEX: /projects/ps-yeolab5/hsher/Tao_circSTAMP/star_2_7_gencode35
+INDEX_NAME: HG38
+
+
+READ1_ADAPTOR: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/input/nextera.fasta
+READ2_ADAPTOR:  /tscc/nfs/home/hsher/projects/circSTAMP_pipe/input/nextera.fasta
+
+# settings for Ciri
+CIRICONFIG: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/ciriconfig_full.yaml
+CIRCRIP_PATH: /home/hsher/bin/circRIP
+LIBRARY_TYPE: 2 #Library type, 0: unstranded, 1: read1 match the sense strand, 2: read1 match the antisense strand (default: 0)
+
+# ANALYSIS # cut -f 1,2 genome.fa.fai > chrom.sizes
+CHROM_SIZE: /tscc/nfs/home/hsher/gencode_coords/GRCh38.primary_assembly.chrom.sizes
+ANNOTATOR_SPECIES: GRCh38
+GTFDB: /tscc/nfs/home/hsher/gencode_coords/gencode.v35.gtf.db
+edit_thres: 0.9999
+EXPAND_LEN: 30
+
+# circRIP
+SCRIPT_PATH: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/scripts
+R_EXE: /tscc/projects/ps-yeolab4/software/R-4.1.2/bin/Rscript
+
+
+RIP_comparison: # Here you specify what to use a background and what to use as input, these names have to be in manifest['Sample']
+fit_overdispersion_from: 
+
+# STAMP
+STAMP:
+  - RBM15_STAMP
+  - YTHDF2_STAMP
+
+STAMP_control:
+  - APOBEC1only
+
+external_stamp_control:
