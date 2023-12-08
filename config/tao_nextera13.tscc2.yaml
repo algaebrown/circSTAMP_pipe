@@ -1,14 +1,14 @@
 # Cell line specific circles, iteration 2
-workdir: /tscc/nfs/home/hsher/scratch/circ_nextera_iter13
+workdir: /tscc/lustre/scratch/hsher/circ_nextera_iter13_test
 menifest: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/notebook/nextera_iter13_RBM15_U2AF_STAMP.csv
 
 GFF: /tscc/nfs/home/hsher/gencode_coords/gencode.v35.basic.annotation.gff3  
 GTF: /tscc/nfs/home/hsher/gencode_coords/gencode.v35.basic.annotation.gtf  
 GENOMEFA: /tscc/nfs/home/hsher/gencode_coords/GRCh38.primary_assembly.genome.fa
 GENOMEFAI: /tscc/nfs/home/hsher/gencode_coords/GRCh38.primary_assembly.genome.fa.fai
-BWA_INDEX: /projects/ps-yeolab5/hsher/Tao_circSTAMP/bwa_gencode35
-HISAT_INDEX: /projects/ps-yeolab5/hsher/Tao_circSTAMP/hisat_gencode35
-STAR_INDEX: /projects/ps-yeolab5/hsher/Tao_circSTAMP/star_2_7_gencode35
+BWA_INDEX: /tscc/projects/ps-yeolab5/hsher/Tao_circSTAMP/bwa_gencode35
+HISAT_INDEX: /tscc/projects/ps-yeolab5/hsher/Tao_circSTAMP/hisat_gencode35
+STAR_INDEX: /tscc/projects/ps-yeolab5/hsher/Tao_circSTAMP/star_2_7_gencode35
 INDEX_NAME: HG38
 
 
