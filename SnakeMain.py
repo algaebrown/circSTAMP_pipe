@@ -1,10 +1,11 @@
 """
 snakemake -s SnakeMain.py \
     -j 12 \
-    --configfile config/tao_nextera13.yaml \
+    --configfile config/tao_nextera13.tscc2.yaml \
     --cluster "sbatch -t {params.run_time} -n {params.cores} -e {params.error_out_file} -q home-yeo" \
     --use-conda \
-    --conda-prefix /tscc/nfs/home/hsher/snakeconda
+    --conda-prefix /tscc/projects/ps-yeolab5/snakeconda \
+    --conda-create-envs-only
 """
 import pandas as pd
 manifest = pd.read_csv(config['menifest'])

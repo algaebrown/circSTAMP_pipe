@@ -10,8 +10,8 @@ rule cutadapt:
         fq1=lambda wildcards: glob.glob(manifest.loc[manifest.Sample == wildcards.sample_label]["fastq1"].values[0]),
         fq2=lambda wildcards: glob.glob(manifest.loc[manifest.Sample == wildcards.sample_label]["fastq2"].values[0]),
     output:
-        fq1="output/fastqs/{sample_label}_1.Tr.fq.gz",
-        fq2="output/fastqs/{sample_label}_2.Tr.fq.gz",
+        fq1=temp("output/fastqs/{sample_label}_1.Tr.fq.gz"),
+        fq2=temp("output/fastqs/{sample_label}_2.Tr.fq.gz"),
         metrics = "output/fastqs/{sample_label}_1.Tr.metrics",
     params:
         error_out_file = "error_files/cutadapt.{sample_label}",

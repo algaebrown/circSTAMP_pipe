@@ -7,41 +7,7 @@ snakemake -s SnakeCircEdit.smk -j 12 \
 from pathlib import Path
 import pandas as pd
 SCRIPT_PATH=config['SCRIPT_PATH']
-# manifest = pd.read_csv(config['menifest'])
-# print(manifest)
 
-# BSJ_threshold=500
-
-# sample_labels = manifest['Sample'].tolist()
-# workdir: config['workdir']
-
-# def get_all_circ_id(sample_label):
-#     df = pd.read_csv(f'output/{sample_label}.gtf', names = ['chr', 'source', 'type','start','end',
-#     'score', 'strand', '.', 'annotation'], sep = '\t', comment = '#'
-#     )
-#     print(df.head())
-#     df['name']=df['annotation'].apply(lambda string: string.split('circ_id ')[1].split(';')[0].replace('\"', ''))
-#     df['bsj']=df['annotation'].apply(lambda string: float(string.split('bsj ')[1].split(';')[0]))
-#     return df.loc[df['bsj']>BSJ_threshold]['name'].tolist()
-
-# def get_all_outputs_for_1_sample(sample_label):
-#     circids = get_all_circ_id(sample_label)
-#     outputs = [f"output/edits/{sample_label}.dp4.{strand}.snp_filtered/{circ_id}.tsv"
-#     for strand in ['pos', 'neg'] for circ_id in circids
-#     ]
-#     return outputs
-
-# def get_all_outputs(samples):
-#     outputs = []
-#     for s in samples:
-#         outputs += get_all_outputs_for_1_sample(s)
-#     return outputs
-
-# print([len(get_all_circ_id(s)) for s in sample_labels])
-
-# rule all:
-#     input: 
-#         get_all_outputs(sample_labels)
 
 rule pileup:
     input:
@@ -49,7 +15,7 @@ rule pileup:
         bam = "output/circ/{sample_label}_denovo.sorted.bam",
         bai = "output/circ/{sample_label}_denovo.sorted.bam.bai",
     output:
-        vcf="output/edits/{sample_label}.dp4.vcf",
+        vcf=temp("output/edits/{sample_label}.dp4.vcf"),
     params:
         error_out_file = "error_files/vcf.{sample_label}",
         run_time = "12:00:00",
@@ -74,8 +40,8 @@ rule filter_variants:
     input:
         vcf="output/edits/{sample_label}.dp4.vcf"
     output:
-        pos_vcf = "output/edits/{sample_label}.dp4.pos.vcf",
-        neg_vcf = "output/edits/{sample_label}.dp4.neg.vcf",
+        pos_vcf = temp("output/edits/{sample_label}.dp4.pos.vcf"),
+        neg_vcf = temp("output/edits/{sample_label}.dp4.neg.vcf"),
     params:
         error_out_file = "error_files/filter_vcf.{sample_label}",
         run_time = "12:00:00",
@@ -124,7 +90,7 @@ rule make_edit_table:
         circ_ref = "output/circ/{sample_label}_index.fa",
         fadict = "output/circ/{sample_label}_index.dict"
     output:
-        tsv = "output/edits/{sample_label}.dp4.{strand}.vcf.tsv"
+        tsv = temp("output/edits/{sample_label}.dp4.{strand}.vcf.tsv")
     params:
         error_out_file = "error_files/variant_table.{sample_label}.{strand}",
         run_time = "6:00:00",
@@ -160,6 +126,7 @@ rule aggregate_pseudoreference:
         python {SCRIPT_PATH}/aggregate_pseudoreference_edit.py \
             {input.tsv} {params.alt} {output.all}
         """
+
 rule filter_snp:
     input:
         tsv = "output/edits/{sample_label}.dp4.{strand}.vcf.aggregated.nonzero.tsv"
@@ -175,24 +142,6 @@ rule filter_snp:
         """
         python {SCRIPT_PATH}/filter_snp.py {input.tsv} {output}
         """
-
-
-
-# rule split_by_contig:
-#     input:
-#         vcf="output/edits/{sample_label}.dp4.{strand}.vcf.snpfiltered.tsv"
-#     output:
-#         by_circ= "output/edits/{sample_label}.dp4.{strand}.circ_level.tsv"
-#     params:
-#         error_out_file = "error_files/variant_table_sum_by_circ.{sample_label}.{strand}",
-#         run_time = "2:00:00",
-#         cores = "2",
-#     conda:
-#         "envs/metadensity.yaml"
-#     shell:
-#         """
-#         python {SCRIPT_PATH}/edit_level_by_circ.py {input.vcf} {params.alt} {output}
-#         """
 
 
 rule sailor_testing:
