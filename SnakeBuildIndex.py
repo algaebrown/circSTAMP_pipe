@@ -6,20 +6,6 @@ HISAT_INDEX=config['HISAT_INDEX']
 GENOMEFA=config['GENOMEFA']
 GTF=config['GTF']
 
-# rule all:
-#     input:
-#         BWA_INDEX+'.amb',
-#         HISAT_INDEX+'.1.ht2',
-#         os.path.join(config['STAR_INDEX'], 'SAindex')
-#     output:
-#         "BUILD_DONE"
-#     params:
-#         run_time = "00:03:00",
-#         cores = "1",
-#     shell:
-#         """
-#         echo DONE > {output}
-#         """
 
 rule get_bwa_index:
     input:

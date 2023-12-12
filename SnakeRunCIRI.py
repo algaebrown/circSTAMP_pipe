@@ -12,21 +12,19 @@ rule run_ciri_RNASE:
         read2 = "output/fastqs/{sample_label}_2.Tr.fq.gz",
         yaml=config['CIRICONFIG']
     output:
-        # "output/align/{sample_label}.bam",
+        temp("output/align/{sample_label}.sorted.bam"),
+        temp("output/align/{sample_label}.sorted.bam.bai"),
         "output/{sample_label}.gtf",
         "output/{sample_label}.bed",
-        # "output/{sample_label}.bed",
-        # "output/gene/{sample_label}_cov.gtf",
-        # "output/gene/{sample_label}_genes.list",
-        # "output/gene/{sample_label}_out.gtf",
-        # "output/align/{sample_label}.sorted.bam",
-        # "output/align/{sample_label}.sorted.bam.bai",
-        # "output/circ/{sample_label}.ciri",
-        #expand("output/circ/{sample_label}_index.{number}.ht2", number = list(range(20)), allow_missing=True),
+        "output/gene/{sample_label}_cov.gtf",
+        "output/gene/{sample_label}_genes.list",
+        "output/gene/{sample_label}_out.gtf",
+        "output/circ/{sample_label}.ciri",
         "output/circ/{sample_label}_index.fa",
-        "output/circ/{sample_label}_index.fa.fai",
         "output/circ/{sample_label}_denovo.sorted.bam",
         "output/circ/{sample_label}_denovo.sorted.bam.bai",
+        temp(expand("{sample_label}_index.{num}.ht2", sample_label = "sample_label", num = list(range(1,9)), allow_missing = True)),
+        temp(expand("{sample_label}_index.{num}.ht2l", sample_label = "sample_label", num = list(range(1,9)), allow_missing = True)),
     params:
         name="{sample_label}",
         error_out_file = "error_files/ciri.{sample_label}",
@@ -40,10 +38,6 @@ rule run_ciri_RNASE:
         "envs/ciriquant.yaml"
     shell:
         """
-        # remove incomplete files if exist. don't work, make things fail
-        #rm output/gene/{wildcards.sample_label}*
-        #rm output/align/{wildcards.sample_label}*
-        #rm output/circ/{wildcards.sample_label}*
 
         CIRIquant \
             -1 {input.read1} \
@@ -55,6 +49,21 @@ rule run_ciri_RNASE:
             -t 4
         """
 
+rule index_fa:
+    input:
+        "output/circ/{sample_label}_index.fa"
+    output:
+        "output/circ/{sample_label}_index.fa.fai"
+    params:
+        error_out_file = "error_files/index_fa.{sample_label}",
+        run_time = "1:00:00",
+        cores = "1",
+    conda:
+        "envs/ciriquant.yaml"
+    shell:
+        """
+        samtools faidx {input}
+        """
 # RNase correction ruin things
 # rule run_ciri_polyA_rnase_coorection:
 #     input:
