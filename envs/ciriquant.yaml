@@ -1,27 +1,50 @@
-name: CIRI
+name: ciriquant
 channels:
-- defaults
-- bioconda
-- conda-forge
+  - bioconda
+  - defaults
 dependencies:
-- bioconda::bwa=0.7.17
-- bioconda::hisat2=2.2.0
-- bioconda::stringtie=2.1.1
-- bioconda::samtools>=1.10
-- bioconda::bioconductor-edger=3.28.0
-- bioconda::bioconductor-limma=3.42.0
-- conda-forge::r-statmod=1.4.35
-- conda-forge::r-base=3.6
-- conda-forge::r-optparse=1.6.6
-- python=2.7.15
-- pip=20.0.2
-- perl=5.26.2
-- pip:
-  - CIRIquant>=1.1.2
-  - numexpr==2.6.9
-  - numpy==1.16.4
-  - pysam==0.15.2
-  - PyYAML==5.4
-  - scikit-learn==0.20.3
-  - scipy==1.2.2
-  - argparse>=1.2.1
+  - _libgcc_mutex=0.1=main
+  - _openmp_mutex=5.1=1_gnu
+  - bwa=0.7.17=h5bf99c6_8
+  - bzip2=1.0.8=h7b6447c_0
+  - c-ares=1.19.1=h5eee18b_0
+  - ca-certificates=2023.08.22=h06a4308_0
+  - certifi=2020.6.20=pyhd3eb1b0_3
+  - gdbm=1.18=hd4cb3f1_4
+  - hisat2=2.1.0=py27hc9558a2_4
+  - htslib=1.13=h9093b5e_0
+  - krb5=1.19.2=hac12032_0
+  - libcurl=7.87.0=h91b91d3_0
+  - libdeflate=1.17=h5eee18b_1
+  - libedit=3.1.20210714=h7f8727e_0
+  - libev=4.33=h7f8727e_1
+  - libffi=3.3=he6710b0_2
+  - libgcc-ng=11.2.0=h1234567_1
+  - libgomp=11.2.0=h1234567_1
+  - libnghttp2=1.52.0=ha637b67_1
+  - libssh2=1.10.0=h37d81fd_2
+  - libstdcxx-ng=11.2.0=h1234567_1
+  - ncurses=6.2=he6710b0_1
+  - openssl=1.1.1w=h7f8727e_0
+  - perl=5.34.0=h5eee18b_2
+  - pip=19.3.1=py27_0
+  - python=2.7.18=ha1903f6_2
+  - readline=8.1=h27cfd23_0
+  - samtools=1.13=h8c37831_0
+  - setuptools=44.0.0=py27_0
+  - sqlite=3.40.1=h5082296_0
+  - stringtie=2.2.1=h3198e80_0
+  - tk=8.6.12=h1ccaba5_0
+  - wheel=0.37.1=pyhd3eb1b0_0
+  - xz=5.2.10=h5eee18b_1
+  - zlib=1.2.13=h5eee18b_0
+  - pip:
+      - argparse==1.4.0
+      - ciriquant==1.1.3
+      - numexpr==2.6.9
+      - numpy==1.16.4
+      - pysam==0.15.2
+      - pyyaml==5.4
+      - scikit-learn==0.20.3
+      - scipy==1.2.2
+prefix: /tscc/nfs/home/hsher/miniconda3/envs/ciriquant

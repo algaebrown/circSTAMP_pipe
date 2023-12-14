@@ -12,7 +12,7 @@ STAR_INDEX: /projects/ps-yeolab5/hsher/Tao_circSTAMP/star_2_7_gencode35
 INDEX_NAME: HG38
 
 
-READ1_ADAPTOR: /home/hsher/projects/circSTAMP_pipe/input/nextera.fasta
+READ1_ADAP3TOR: /home/hsher/projects/circSTAMP_pipe/input/nextera.fasta
 READ2_ADAPTOR:  /home/hsher/projects/circSTAMP_pipe/input/nextera.fasta
 
 # settings for Ciri
