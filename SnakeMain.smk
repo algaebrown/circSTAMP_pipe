@@ -1,26 +1,44 @@
 """
-snakemake -s SnakeMain.py \
+snakemake -s SnakeMain.smk \
     -j 12 \
-    --configfile config/tao_nextera13.tscc2.yaml \
-    --cluster "sbatch -t {params.run_time} -n {params.cores} -e {params.error_out_file} -q home-yeo" \
+    /tscc/nfs/home/hsher/projects/circSTAMP_pipe/config/tao_nextera13.tscc2.yaml \
+    --cluster "sbatch -t {params.run_time} -n {params.cores} -e {params.error_out_file} -q hotel" \
     --use-conda \
-    --conda-prefix /tscc/projects/ps-yeolab5/snakeconda \
+    --conda-prefix /tscc/projects/ps-yeolab5/hsher/snakeconda \
     --conda-create-envs-only
+
+snakemake -s SnakeMain.smk \
+    -j 12 \
+    --configfile config/tao_trueseq2.yaml \
+    --cluster "qsub -l walltime={params.run_time} -l nodes=1:ppn={params.cores} -e {params.error_out_file} -q home-yeo" \
+    --use-conda \
+    --conda-prefix /home/hsher/snakeconda \
+    -n
 """
 import pandas as pd
+import os
+print(config.keys())
 manifest = pd.read_csv(config['menifest'])
-print(manifest)
+
+# check file existence
+assert manifest['fastq1'].apply(os.path.isfile).all()
+assert manifest['fastq2'].apply(os.path.isfile).all()
+
 
 sample_labels = manifest['Sample'].tolist()
 config['sample_labels']=sample_labels
 workdir: config['workdir']
 # rnase_treated_labels = manifest.loc[manifest['Rnase'],'Sample'].tolist()
 # total_treated_labels = [s.replace('-R', '-A') for s in rnase_treated_labels]
-if config['fit_overdispersion_from'] is None:
+try:
+    if config['fit_overdispersion_from'] is None:
+        config['fit_overdispersion_from'] = []
+except KeyError:
     config['fit_overdispersion_from'] = []
 
 if 'STAMP' not in config:
     config['STAMP']=[]
+
 if 'STAMP_control' not in config:
     config['STAMP_control'] = []
 if config['STAMP'] is None:
@@ -87,22 +105,22 @@ rule all:
 
 module build_index:
     snakefile:
-        "SnakeBuildIndex.py"
+        "SnakeBuildIndex.smk"
     config: config
 
 module preprocess:
     snakefile:
-        "SnakePreprocess.py"
+        "SnakePreprocess.smk"
     config: config
 
 module ciri:
     snakefile:
-        "SnakeRunCIRI.py"
+        "SnakeRunCIRI.smk"
     config: config
 
 module qc:
     snakefile:
-        "SnakeQC.py"
+        "SnakeQC.smk"
     config: config
 
 module count_edit:
@@ -112,7 +130,7 @@ module count_edit:
 
 module rip:
     snakefile:
-        "SnakeRIP.py"
+        "SnakeRIP.smk"
     config:
         config
 

@@ -23,8 +23,8 @@ rule run_ciri_RNASE:
         "output/circ/{sample_label}_index.fa",
         "output/circ/{sample_label}_denovo.sorted.bam",
         "output/circ/{sample_label}_denovo.sorted.bam.bai",
-        temp(expand("{sample_label}_index.{num}.ht2", sample_label = "sample_label", num = list(range(1,9)), allow_missing = True)),
-        temp(expand("{sample_label}_index.{num}.ht2l", sample_label = "sample_label", num = list(range(1,9)), allow_missing = True)),
+        temp(expand("{sample_label}_index.{num}.ht2", sample_label = "{sample_label}", num = list(range(1,9)), allow_missing = True)),
+        temp(expand("{sample_label}_index.{num}.ht2l", sample_label = "{sample_label}", num = list(range(1,9)), allow_missing = True)),
     params:
         name="{sample_label}",
         error_out_file = "error_files/ciri.{sample_label}",
