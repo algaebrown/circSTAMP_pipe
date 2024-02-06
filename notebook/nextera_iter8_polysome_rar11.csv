@@ -1,5 +1,1 @@
 ,fastq1,fastq2,Sample,Rnase
-0,/home/tayu/seqdata/tao/circRNA_seq/circapp/igm-storage.ucsd.edu/230517_A01535_0329_BH75WTDSX7/PP_Monosome1_S5_L002_R1_001.fastq.gz,/home/tayu/seqdata/tao/circRNA_seq/circapp/igm-storage.ucsd.edu/230517_A01535_0329_BH75WTDSX7/PP_Monosome1_S5_L002_R2_001.fastq.gz,PP_Monosome1,True
-1,/home/tayu/seqdata/tao/circRNA_seq/circapp/igm-storage.ucsd.edu/230517_A01535_0329_BH75WTDSX7/PP_Polysome1_S7_L002_R1_001.fastq.gz,/home/tayu/seqdata/tao/circRNA_seq/circapp/igm-storage.ucsd.edu/230517_A01535_0329_BH75WTDSX7/PP_Polysome1_S7_L002_R2_001.fastq.gz,PP_Polysome1,True
-2,/home/tayu/seqdata/tao/circRNA_seq/circapp/igm-storage.ucsd.edu/230517_A01535_0329_BH75WTDSX7/PP_Monosome2_S6_L002_R1_001.fastq.gz,/home/tayu/seqdata/tao/circRNA_seq/circapp/igm-storage.ucsd.edu/230517_A01535_0329_BH75WTDSX7/PP_Monosome2_S6_L002_R2_001.fastq.gz,PP_Monosome2,True
-3,/home/tayu/seqdata/tao/circRNA_seq/circapp/igm-storage.ucsd.edu/230517_A01535_0329_BH75WTDSX7/PP_Polysome2_S8_L002_R1_001.fastq.gz,/home/tayu/seqdata/tao/circRNA_seq/circapp/igm-storage.ucsd.edu/230517_A01535_0329_BH75WTDSX7/PP_Polysome2_S8_L002_R2_001.fastq.gz,PP_Polysome2,True

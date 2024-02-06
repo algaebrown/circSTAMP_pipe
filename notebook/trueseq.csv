@@ -1,0 +1,4 @@
+,Sample,fastq1,fastq2,Rnase
+1,circseq-bm-arr,/tscc/nfs/home/hsher/seqdata/tao/circRNA_seq/circseq_bm_arr_L001_ds.20b690160258497391dcab9b4af463e2/circseq-bm-arr_S2_L001_R1_001.fastq.gz,/tscc/nfs/home/hsher/seqdata/tao/circRNA_seq/circseq_bm_arr_L001_ds.20b690160258497391dcab9b4af463e2/circseq-bm-arr_S2_L001_R2_001.fastq.gz,True
+2,circseq-bm-rz,/tscc/nfs/home/hsher/seqdata/tao/circRNA_seq/circseq_bm_rz_L001_ds.af4068b1ddff49ea8788ed20fdfce7aa/circseq-bm-rz_S1_L001_R1_001.fastq.gz,/tscc/nfs/home/hsher/seqdata/tao/circRNA_seq/circseq_bm_rz_L001_ds.af4068b1ddff49ea8788ed20fdfce7aa/circseq-bm-rz_S1_L001_R2_001.fastq.gz,False
+3,circseq-bm-rar,/tscc/nfs/home/hsher/seqdata/tao/circRNA_seq/circseq_bm_rar_L001_ds.45c4824305b84cacbaca012821affeb5/circseq-bm-rar_S3_L001_R1_001.fastq.gz,/tscc/nfs/home/hsher/seqdata/tao/circRNA_seq/circseq_bm_rar_L001_ds.45c4824305b84cacbaca012821affeb5/circseq-bm-rar_S3_L001_R2_001.fastq.gz,True
