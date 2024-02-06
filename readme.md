@@ -1,28 +1,26 @@
 # Basic usage
 ## Installation
-- Yeolab internal users: `module load snakemake`
-- or install snakemake yourself
+### Snakemake:
+- Yeolab internal users: I suggest you to install your own snakemake. The snakemake module on TSCC 2.0 contaminates my python env. `conda create -n snakemake; conda install snakemake==7.3.8`
+### Singularity
+- Yeolab internal users: `module load singularitypro`. 
+- External user: Preferably ask sys admin to install singularity for you.
 
 ## How to run
 On TSCC 2.0, or Slurm system
 ```
+# install your own snakemake prior to this
+conda activate snakemake
+module load singularitypro
+# 
 snakemake -s SnakeMain.py \
-    -j 12 \
     --configfile YOUR_CONFIG.yaml \
-    --cluster "sbatch -t {params.run_time} -n {params.cores} -e {params.error_out_file} -q home-yeo" \
-    --use-conda \
-    --conda-prefix SOME_OF_YOUR_PATH_TO_STORE_CONDA
+    --profile profiles/tscc2 \
+    -n
 ```
 
-On TSCC 1.0, or PBS/Torque system
-```
-snakemake -s SnakeMain.py \
-    -j 12 \
-    --configfile YOUR_CONFIG.yaml \
-    --cluster "qsub -l walltime={params.run_time} -l nodes=1:ppn={params.cores} -e {params.error_out_file} -q home-yeo" \
-    --use-conda \
-    --conda-prefix SOME_OF_YOUR_PATH_TO_STORE_CONDA
-```
+On other server, you need to modify profiles/. Check snakemake documentation on how to modify it.
+
 ## Preparing to run, generate config.yaml
 - If you are running the nextera library, see `config/tao_nextera.yaml` as the example
 - If you are running the truseq library, see `config/tao_truseq.yaml` as the example
