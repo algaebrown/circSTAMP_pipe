@@ -1,8 +1,8 @@
-#snakemake -s SnakeQC.py -j 6 --configfile config/tao.yaml --cluster "qsub -l walltime={params.run_time} -l nodes=1:ppn={params.cores} -e {params.error_out_file} -q home-yeo" --use-conda
 import pandas as pd
-
+locals().update(config)
 manifest = pd.read_csv(config['menifest'])
 sample_labels = manifest['Sample'].tolist()
+
 
 rule all:
     input:
@@ -24,23 +24,24 @@ rule all:
 
 rule gather_trimming_stat:
     input:
-        tr1=expand("output/fastqs/{sample_label}_1.Tr.metrics", sample_label = sample_labels)
+        tr1=expand("output/fastqs/{sample_label}-trimmed.log", sample_label = sample_labels)
     output:
-        tr1='QC/cutadapt_log.csv',
+        tr1='QC/skewer_log.csv',
     params:
         run_time = "00:10:00",
         error_out_file = "error_files/trimstat",
         cores="1",
+        memory = 10000,
     conda:
         "envs/metadensity.yaml"
     shell:
         """
-        python /home/hsher/projects/QC_tools/trimming_stat.py "{input.tr1}" {output.tr1}
+        python {QC_TOOLS_PATH}/trimming_stat.py "{input.tr1}" {output.tr1}
         """
 rule gather_fastqc_report:
     input:
-        fq1=expand("fastQC/{sample_label}_1.Tr_fastqc/fastqc_data.txt", sample_label = sample_labels),
-        fq2=expand("fastQC/{sample_label}_2.Tr_fastqc/fastqc_data.txt", sample_label = sample_labels),
+        fq1=expand("fastQC/{sample_label}-trimmed-pair1_fastqc/fastqc_data.txt", sample_label = sample_labels),
+        fq2=expand("fastQC/{sample_label}-trimmed-pair2_fastqc/fastqc_data.txt", sample_label = sample_labels),
     output:
         basic1='QC/fastQC_basic_summary.r1.csv',
         passfail1='QC/fastQC_passfail.r1.csv',
@@ -56,8 +57,8 @@ rule gather_fastqc_report:
         "envs/metadensity.yaml"
     shell:
         """
-        python /home/hsher/projects/QC_tools/fastqc_io.py -i "{input.fq1}" -p {output.passfail1} -b {output.basic1}
-        python /home/hsher/projects/QC_tools/fastqc_io.py -i "{input.fq2}" -p {output.passfail2} -b {output.basic2}
+        python {QC_TOOLS_PATH}/fastqc_io.py -i "{input.fq1}" -p {output.passfail1} -b {output.basic1}
+        python {QC_TOOLS_PATH}/fastqc_io.py -i "{input.fq2}" -p {output.passfail2} -b {output.basic2}
         """
 rule gather_GENOME_mapstat:
     input:
@@ -75,5 +76,5 @@ rule gather_GENOME_mapstat:
         job_name = "gather_stat",
     shell:
         """
-        python /home/hsher/projects/QC_tools/star_mapping_stat_io.py -i "{input}" -o {output}
+        python {QC_TOOLS_PATH}/star_mapping_stat_io.py -i "{input}" -o {output}
         """

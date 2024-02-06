@@ -1,47 +1,77 @@
 import pandas as pd
 import glob
+locals().update(config)
 try:
     manifest = pd.read_csv(config['menifest'])
 except:
     pass
 
-rule cutadapt:
+# rule cutadapt:
+#     input:
+#         fq1=lambda wildcards: glob.glob(manifest.loc[manifest.Sample == wildcards.sample_label]["fastq1"].values[0]),
+#         fq2=lambda wildcards: glob.glob(manifest.loc[manifest.Sample == wildcards.sample_label]["fastq2"].values[0]),
+#     output:
+#         fq1=temp("output/fastqs/{sample_label}_1.Tr.fq.gz"),
+#         fq2=temp("output/fastqs/{sample_label}_2.Tr.fq.gz"),
+#         metrics = "output/fastqs/{sample_label}_1.Tr.metrics",
+#     params:
+#         error_out_file = "error_files/cutadapt.{sample_label}",
+#         run_time = "6:45:00",
+#         cores = "8",
+#         memory = "15000",
+#         job_name = "cutadapt",
+#         adaptor1 = config['READ1_ADAPTOR'],
+#         adaptor2 = config['READ2_ADAPTOR'],
+#     benchmark: "benchmarks/cutadapt.{sample_label}.txt"
+#     conda:
+#         "envs/cutadapt.yaml"
+#     shell:
+#         """
+#         cutadapt -A file:{params.adaptor2} \
+#             -a file:{params.adaptor1} \
+#             -o {output.fq1} -p {output.fq2}  \
+#             --pair-filter=any \
+#             --times=2 \
+#             -m 20 \
+#             {input.fq1} {input.fq2} > {output.metrics}
+#         """
+        
+
+rule trim_adapter:
     input:
         fq1=lambda wildcards: glob.glob(manifest.loc[manifest.Sample == wildcards.sample_label]["fastq1"].values[0]),
         fq2=lambda wildcards: glob.glob(manifest.loc[manifest.Sample == wildcards.sample_label]["fastq2"].values[0]),
     output:
-        fq1=temp("output/fastqs/{sample_label}_1.Tr.fq.gz"),
-        fq2=temp("output/fastqs/{sample_label}_2.Tr.fq.gz"),
-        metrics = "output/fastqs/{sample_label}_1.Tr.metrics",
+        fq1=temp("output/fastqs/{sample_label}-trimmed-pair1.fastq.gz"),
+        fq2=temp("output/fastqs/{sample_label}-trimmed-pair2.fastq.gz"),
+        metrics = "output/fastqs/{sample_label}-trimmed.log",
     params:
-        error_out_file = "error_files/cutadapt.{sample_label}",
-        run_time = "6:45:00",
-        cores = "4",
-        memory = "10000",
-        job_name = "cutadapt",
+        error_out_file = "error_files/skewer.{sample_label}",
+        run_time = "3:45:00",
+        cores = "8",
+        memory = "15000",
         adaptor1 = config['READ1_ADAPTOR'],
         adaptor2 = config['READ2_ADAPTOR'],
-    benchmark: "benchmarks/cutadapt/{sample_label}.extract.txt"
-    conda:
-        "envs/cutadapt.yaml"
+    benchmark: "benchmarks/skewer.{sample_label}.txt"
+    container:
+        "docker://howardxu520/skipper:skewer_0.2.2"
     shell:
         """
-        cutadapt -A file:{params.adaptor2} \
-            -a file:{params.adaptor1} \
-            -o {output.fq1} -p {output.fq2}  \
-            --pair-filter=any \
-            --times=2 \
-            -m 20 \
-            {input.fq1} {input.fq2} > {output.metrics}
+        skewer -t {params.cores} \
+            -x {params.adaptor1} \
+            -y {params.adaptor2} \
+            -o output/fastqs/{wildcards.sample_label} \
+            -z -r 0.2 -d 0.2 -q 13 -l 20 \
+            {input.fq1} {input.fq2}
         """
 
 rule fastQC:
     input:
-        fq1="output/fastqs/{sample_label}_1.Tr.fq.gz",
-        fq2="output/fastqs/{sample_label}_2.Tr.fq.gz"
+        fq1=rules.trim_adapter.output.fq1,
+        fq2=rules.trim_adapter.output.fq2
     output:
-        fq1_zip="fastQC/{sample_label}_1.Tr_fastqc/fastqc_data.txt",
-        fq2_zip="fastQC/{sample_label}_2.Tr_fastqc/fastqc_data.txt",
+        fq1_zip="fastQC/{sample_label}-trimmed-pair1_fastqc/fastqc_data.txt",
+        fq2_zip="fastQC/{sample_label}-trimmed-pair2_fastqc/fastqc_data.txt",
     params:
         outdir="fastQC/",
         error_out_file = "error_files/fastqc.{sample_label}",
@@ -50,16 +80,18 @@ rule fastQC:
         cores = "2",
         memory = "10000",
         job_name = "fastQC",
+    container:
+        "docker://howardxu520/skipper:fastqc_0.12.1"
     shell:
         """
-        module load fastqc
         fastqc {input.fq1} --extract --outdir {params.outdir} -t {params.thread}
         fastqc {input.fq2} --extract --outdir {params.outdir} -t {params.thread}
         """
 rule align_reads:
     input:
-        fq1="output/fastqs/{sample_label}_1.Tr.fq.gz",
-        fq2="output/fastqs/{sample_label}_2.Tr.fq.gz"
+        fq1=rules.trim_adapter.output.fq1,
+        fq2=rules.trim_adapter.output.fq2,
+        index = ancient(STAR_INDEX)
     output:
         bam = "output/bams/{sample_label}.Aligned.sortedByCoord.out.bam",
         stat = "output/bams/{sample_label}.Log.final.out",
@@ -67,15 +99,16 @@ rule align_reads:
         error_out_file = "error_files/star.{sample_label}",
         run_time = "03:40:00",
         cores = "4",
-        memory = "10000",
+        memory = "160000",
         job_name = "align_reads",
         thread = "6",
         star_db=config['STAR_INDEX'],
         prefix="output/bams/{sample_label}."
     benchmark: "benchmarks/align/{sample_label}.align_reads.txt"
+    container:
+        "docker://howardxu520/skipper:star_2.7.10b"
     shell:
         """
-        module load star
         STAR --genomeDir {params.star_db} \
             --runThreadN {params.thread} \
             --readFilesIn {input.fq1} {input.fq2} \
@@ -101,8 +134,9 @@ rule index_bams:
         memory = "1000",
         job_name = "index_bam"
     benchmark: "benchmarks/align/{sample_label}.index_bam.txt"
+    container:
+        "docker://howardxu520/skipper:samtools_1.17"
     shell:
-        "module load samtools;"
         "samtools index {input.bam};"
 
 rule quantify_linear:
@@ -118,9 +152,10 @@ rule quantify_linear:
         cores = "4",
         memory = "1000",
         job_name = "index_bam"
+    container:
+        "docker://pegi3s/feature-counts:2.0.0"
     shell:
         """
-        module load subreadfeaturecounts
         featureCounts -p \
             -a {params.gtf} \
             -o {output} {input.bams} \
@@ -140,9 +175,10 @@ rule quantify_linear_mRNA:
         cores = "4",
         memory = "1000",
         job_name = "index_bam"
+    container:
+        "docker://pegi3s/feature-counts:2.0.0"
     shell:
         """
-        module load subreadfeaturecounts
         featureCounts -p \
             -a {params.gtf} \
             -o {output} {input.bams} \

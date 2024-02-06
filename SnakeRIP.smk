@@ -87,9 +87,10 @@ rule homer:
         error_out_file = "error_files/circRIP_homer.{ip_sample_label}.{in_sample_label}",
         run_time = "8:00:00",
         cores = "1",
+    container:
+        "docker://howardxu520/skipper:Homer_4.11"
     shell:
         """
-        module load homer
         homer2 denovo -i {input.foreground} -b {input.background} -strand + -o {output}
         """
 

@@ -4,16 +4,25 @@ try:
 except Exception as e:
     print(e)
 
+# 16 core, 4GB is sufficient to run 4 threads but takes >24hr
+# 16 core, 16GB isn't sufficient to run 16 threads (Unable to flush input output)
+# 2 core, 16GB mem isn't sufficient to run 8 threads (killed with signal 9)
+# 4 core, 16GB mem isn't sufficient to run 8 threads (killed with signal 9)
+# but when I do 8 cores, it becomes 64 CPU core available, and it gets into the forward index step, but still, signal 9
+# 8 cores, 48GB mem, 8 thread, still signal 9
+# 16 cores, 4GB mem, 8 thread, died at a later step, Empty fasta file: '/tscc/lustre/scratch/hsher/circ_nextera_iter13_test/output/circ/APOBEC1only_index.fa'
+# no matter how much 2/4 core I requested, it always says 36 CPU cores available, using thread number
+# 16 cores, 16GB mem, 8 thread
 rule run_ciri_RNASE:
     input:
-        bwa_index=config['BWA_INDEX']+'.amb',
-        hisat_index=config['HISAT_INDEX']+'.1.ht2',
-        read1 = "output/fastqs/{sample_label}_1.Tr.fq.gz",
-        read2 = "output/fastqs/{sample_label}_2.Tr.fq.gz",
+        bwa_index=ancient(config['BWA_INDEX']+'.amb'),
+        hisat_index=ancient(config['HISAT_INDEX']+'.1.ht2'),
+        read1 = "output/fastqs/{sample_label}-trimmed-pair1.fastq.gz",
+        read2 = "output/fastqs/{sample_label}-trimmed-pair2.fastq.gz",
         yaml=config['CIRICONFIG']
     output:
-        temp("output/align/{sample_label}.sorted.bam"),
-        temp("output/align/{sample_label}.sorted.bam.bai"),
+        "output/align/{sample_label}.sorted.bam",
+        "output/align/{sample_label}.sorted.bam.bai",
         "output/{sample_label}.gtf",
         "output/{sample_label}.bed",
         "output/gene/{sample_label}_cov.gtf",
@@ -23,22 +32,24 @@ rule run_ciri_RNASE:
         "output/circ/{sample_label}_index.fa",
         "output/circ/{sample_label}_denovo.sorted.bam",
         "output/circ/{sample_label}_denovo.sorted.bam.bai",
-        temp(expand("{sample_label}_index.{num}.ht2", sample_label = "{sample_label}", num = list(range(1,9)), allow_missing = True)),
-        temp(expand("{sample_label}_index.{num}.ht2l", sample_label = "{sample_label}", num = list(range(1,9)), allow_missing = True)),
+    resources:
+        tmpdir = ''
     params:
         name="{sample_label}",
         error_out_file = "error_files/ciri.{sample_label}",
         outdir='output/',
-        run_time = "60:00:00",
-        cores = "16",
+        run_time = "24:00:00",
+        cores = 64,
+        cpu_threads = 16, # 16 
+        memory = 512000, # 512
         library_type=config['LIBRARY_TYPE'],
         #rnase=lambda wildcards: '--RNaseR output/Rnase' if manifest.loc[manifest['Sample']==wildcards.sample_label, 'Rnase'].iloc[0] else ''
         # https://github.com/bioinfo-biols/CIRIquant/issues/4
-    conda:
-        "envs/ciriquant.yaml"
+    container:
+        "docker://mortreux/ciriquant:v1.1.2"
+    benchmark: "benchmarks/ciriquant.{sample_label}.txt"
     shell:
         """
-
         CIRIquant \
             -1 {input.read1} \
             -2 {input.read2} \
@@ -46,7 +57,7 @@ rule run_ciri_RNASE:
             --library-type {params.library_type} \
             -o {params.outdir} \
             -p {params.name} \
-            -t 4
+            -t {params.cpu_threads}
         """
 
 rule index_fa:
@@ -58,8 +69,10 @@ rule index_fa:
         error_out_file = "error_files/index_fa.{sample_label}",
         run_time = "1:00:00",
         cores = "1",
-    conda:
-        "envs/ciriquant.yaml"
+        memory = 1000
+    container:
+        "docker://mortreux/ciriquant:v1.1.2"
+    benchmark: "benchmarks/index_fa.{sample_label}.txt"
     shell:
         """
         samtools faidx {input}
@@ -111,6 +124,8 @@ rule gc_cotent:
         run_time = "2:00:00",
         cores = "1",
         genome=config['GENOMEFA'],
+        memory = 1000,
+    benchmark: "benchmarks/gc_content.txt"
     shell:
         """
         module load bedtools

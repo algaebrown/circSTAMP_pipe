@@ -1,23 +1,35 @@
-#snakemake -s SnakeBuildIndex.py -j 3 --configfile config/tao.yaml --cluster "qsub -l walltime={params.run_time} -l nodes=1:ppn={params.cores} -q home-yeo" --use-conda --conda-frontend conda
+"""
+snakemake -s BuildIndex.smk \
+    -j 4 \
+    --configfile config/tao_nextera15.yaml \
+    --profile profiles/tscc2_single \
+    -n
+"""
+
 import os
+locals().update(config)
+workdir: config['workdir']
 
-BWA_INDEX=config['BWA_INDEX']
-HISAT_INDEX=config['HISAT_INDEX']
-GENOMEFA=config['GENOMEFA']
-GTF=config['GTF']
-
-
+rule all:
+    input:
+        config['BWA_INDEX']+'.amb',
+        config['HISAT_INDEX']+'.1.ht2',
+        os.path.join(config['STAR_INDEX'], 'SAindex')
+    
 rule get_bwa_index:
     input:
         config['GENOMEFA']
     output:
-        BWA_INDEX+'.amb'
-    conda:
-        "envs/ciriquant.yaml"
+        config['BWA_INDEX']+'.amb'
+    container:
+        "docker://mortreux/ciriquant:v1.1.2"
     params:
         run_time = "4:00:00",
-        cores = "3",
-        error_out_file = "error_files/bwabuild.{sample_label}",
+        cores = "1",
+        error_out_file = "error_files/bwabuild",
+        out_file = "stdout/bwabuild",
+        memory = 60000,
+    benchmark: "benchmarks/bwaindex.txt"
     shell:
         """
         bwa index -a bwtsw -p {BWA_INDEX} {input}
@@ -26,13 +38,16 @@ rule get_hisat_index:
     input:
         config['GENOMEFA']
     output:
-       HISAT_INDEX+'.1.ht2'
-    conda:
-        "envs/ciriquant.yaml"
+       config['HISAT_INDEX']+'.1.ht2'
+    container:
+        "docker://mortreux/ciriquant:v1.1.2"
     params:
         run_time = "4:00:00",
-        error_out_file = "error_files/hisatbuild.{sample_label}",
-        cores = "3",
+        error_out_file = "error_files/hisatbuild",
+        out_file = "stdout/hisatbuild",
+        memory = 60000,
+        cores = "1",
+    benchmark: "benchmarks/hisatindex.txt"
     shell:
         """
         hisat2-build {input} {HISAT_INDEX}
@@ -46,12 +61,15 @@ rule build_star_index:
         os.path.join(config['STAR_INDEX'], 'SAindex')
     params:
         outdir=config['STAR_INDEX'],
-        cores = "6",
+        cores = "3",
+        memory = 480000,
         run_time = "5:45:00",
-        error_out_file = "error_files/starbuild.{sample_label}",
+        error_out_file = "error_files/starbuild",
+    benchmark: "benchmarks/starindex.txt"
+    container:
+        "docker://howardxu520/skipper:samtools_1.17"
     shell:
         """
-        module load star
         STAR \
             --runMode genomeGenerate \
             --runThreadN 8 \

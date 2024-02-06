@@ -1,12 +1,6 @@
-"""
-snakemake -s SnakeCircEdit.smk -j 12 \
-    --configfile config/tao_nextera13.yaml \
-    --cluster "qsub -l walltime={params.run_time} -l nodes=1:ppn={params.cores} -e {params.error_out_file} -q home-yeo" \
-    --use-conda --conda-prefix /home/hsher/snakeconda -n
-"""
 from pathlib import Path
 import pandas as pd
-SCRIPT_PATH=config['SCRIPT_PATH']
+locals().update(config)
 
 
 rule pileup:
@@ -19,11 +13,13 @@ rule pileup:
     params:
         error_out_file = "error_files/vcf.{sample_label}",
         run_time = "12:00:00",
-        cores = "3"
+        cores = "3",
+        memory = 40000,
+    benchmark: "benchmarks/pileup.{sample_label}.txt"
+    container:
+        "docker://miguelpmachado/bcftools:1.9-01"
     shell:
         """
-        module load bcftools 
-        
         bcftools mpileup -f {input.circ_ref} {input.bam} \
             --annotate FORMAT/AD,FORMAT/ADF,FORMAT/ADR > {output.vcf}
         """
@@ -45,10 +41,13 @@ rule filter_variants:
     params:
         error_out_file = "error_files/filter_vcf.{sample_label}",
         run_time = "12:00:00",
-        cores = "3"
+        cores = "3",
+        memory = 40000,
+    benchmark: "benchmarks/bcftools_filter_variants.{sample_label}.txt"
+    container:
+        "docker://miguelpmachado/bcftools:1.9-01"
     shell:
         """
-        module load bcftools 
         bcftools filter -i 'REF="{REF_fwd}" & TYPE!="indel"' --output {output.pos_vcf} {input.vcf}
         bcftools filter -i 'REF="{REF_rev}" & TYPE!="indel"' --output {output.neg_vcf} {input.vcf}
         """
@@ -62,10 +61,13 @@ rule gzip_index_vcf:
     params:
         error_out_file = "error_files/gzip.{anything}",
         run_time = "2:00:00",
-        cores = "2"
+        cores = "2",
+        memory = 40000,
+    benchmark: "benchmarks/index_vcf.{anything}.txt"
+    container:
+        "docker://miguelpmachado/bcftools:1.9-01"
     shell:
         """
-        module load bcftools
         bgzip -c {input} > {output.gz}
         tabix {output.gz}
         """
@@ -78,10 +80,13 @@ rule make_index:
     params:
         error_out_file = "error_files/picardindex.{sample_label}",
         run_time = "1:00:00",
-        cores = "1"
+        cores = "1",
+        memory = 10000,
+    benchmark: "benchmarks/picard.{sample_label}.txt"
+    container:
+        "docker://pegi3s/picard:2.21.5"
     shell:
         """
-        module load picard
         picard CreateSequenceDictionary R={input.circ_ref} O={output.fadict}
         """
 rule make_edit_table:
@@ -94,9 +99,11 @@ rule make_edit_table:
     params:
         error_out_file = "error_files/variant_table.{sample_label}.{strand}",
         run_time = "6:00:00",
-        cores = "2"
-    conda:
-        "envs/gatk4.yaml"
+        cores = "2",
+        memory = 80000,
+    container:
+        "docker://tbattaglia/gatk4"
+    benchmark: "benchmarks/make_edit_table.{sample_label}.{strand}.txt"
     shell:
         """
         gatk VariantsToTable \
@@ -118,9 +125,11 @@ rule aggregate_pseudoreference:
         error_out_file = "error_files/aggregate.{sample_label}.{strand}",
         run_time = "02:10:00",
         cores = "2",
+        memory = 40000,
         alt = lambda wildcards: ALT_fwd if wildcards.strand == 'pos' else ALT_rev
     conda:
         "envs/metadensity.yaml"
+    benchmark: "benchmarks/aggregate_pseudoreference.{sample_label}.{strand}.txt"
     shell:
         """
         python {SCRIPT_PATH}/aggregate_pseudoreference_edit.py \
@@ -128,6 +137,8 @@ rule aggregate_pseudoreference:
         """
 
 rule filter_snp:
+    # assumes diploid genome
+    # HEK is triploid
     input:
         tsv = "output/edits/{sample_label}.dp4.{strand}.vcf.aggregated.nonzero.tsv"
     output:
@@ -135,9 +146,11 @@ rule filter_snp:
     params:
         error_out_file = "error_files/filter_snp.{sample_label}.{strand}",
         run_time = "01:20:00",
-        cores = "1"
+        cores = "1",
+        memory = 40000,
     conda:
         "envs/metadensity.yaml"
+    benchmark: "benchmarks/filter_snp.{sample_label}.{strand}.txt"
     shell:
         """
         python {SCRIPT_PATH}/filter_snp.py {input.tsv} {output}
@@ -153,8 +166,10 @@ rule sailor_testing:
         error_out_file = "error_files/sailor_test.{sample_label}.{strand}",
         run_time = "6:00:00",
         cores = "2",
+        memory = 40000,
     conda:
         "envs/metadensity.yaml"
+    benchmark: "benchmarks/sailor.{sample_label}.{strand}.txt"
     shell:
         """
         python {SCRIPT_PATH}/sailor_betainc_testing.py {input.tsv} {output}
@@ -171,8 +186,10 @@ rule pick_from_the_right_strand:
         error_out_file = "error_files/select_right_strand.{sample_label}",
         run_time = "1:00:00",
         cores = "1",
+        memory = 10000,
     conda:
         "envs/metadensity.yaml"
+    benchmark: "benchmarks/pick_strand.{sample_label}.txt"
     shell:
         """
         python {SCRIPT_PATH}/pick_circ_from_strand.py \
@@ -193,6 +210,8 @@ rule make_genome_size:
         error_out_file = "error_files/genome_sizes.{sample_label}",
         run_time = "1:00:00",
         cores = "1",
+        memory = 1000,
+    benchmark: "benchmarks/make_genome_size.{sample_label}.txt"
     shell:
         """
         awk '{{print $1, $2/2}}' OFS='\t' {input.fai} > {output.genome_sizes}
@@ -212,7 +231,9 @@ rule fetch_sequence_around_edit:
         error_out_file = "error_files/fetch_sequence_around.{sample_label}",
         run_time = "1:00:00",
         cores = "1",
-        size = 100 # based on Kris Branan's paper
+        size = 100, # based on Kris Branan's paper
+        memory = 40000,
+    benchmark: "benchmarks/fetch_edit_sequence.{sample_label}.txt"
     shell:
         """
         awk 'NR>1 {{print $14,$13,$13+1,$2,$12,$15}}' OFS='\t' {input.edits} > {output.bed}
@@ -240,6 +261,8 @@ rule significant_edits:
         error_out_file = "error_files/collapse_edit.{sample_label}",
         run_time = "1:00:00",
         cores = "1",
+        memory = 40000,
+    benchmark: "benchmarks/sig_edits.{sample_label}.txt"
     shell:
         """
             awk '$12 < 0.2 {{print $14,$13,$13+1,$2,$12,$15}}' OFS='\t' {input.edits} > {output.sig_edit}
@@ -253,19 +276,27 @@ rule significant_edits:
                 > {output.fa_expanded}
         """
 
+#### Analysis ####
+
+# analysis using circle sequences (can cross BSJ)
 rule homer_expanded:
     input:
         foreground = "output/edits/{stamp_sample_label}.expand_edit_bed.fa",
-        background = "output/edits/{ctrl_sample_label}.expand_edit_bed.fa"
+        background = lambda wildcards: "output/edits/{ctrl_sample_label}.expand_edit_bed.fa" 
+            if wildcards.ctrl_sample_label in config['STAMP_control'] else
+            Path(config['external_stamp_control'][wildcards.ctrl_sample_label]['prefix'])/"output/edits"/(config['external_stamp_control'][wildcards.ctrl_sample_label]['sample_name']+".expand_edit_bed.fa")
     output:
         "output/edits/homer/{stamp_sample_label}.{ctrl_sample_label}.homer"
     params:
         error_out_file = "error_files/edits_homer.{stamp_sample_label}.{ctrl_sample_label}",
         run_time = "8:00:00",
         cores = "1",
+        memory = 40000,
+    benchmark: "benchmarks/homer.{stamp_sample_label}.{ctrl_sample_label}.txt"
+    container:
+        "docker://howardxu520/skipper:R_4.1.3_1"
     shell:
         """
-        module load homer
         homer2 denovo -i {input.foreground} -b {input.background} -strand + -o {output}
         """
 
@@ -279,8 +310,10 @@ rule collapse_edits:
         error_out_file = "error_files/collapse_edit.{sample_label}",
         run_time = "1:00:00",
         cores = "1",
+        memory = 10000,
     conda:
         "envs/metadensity.yaml"
+    benchmark: "benchmarks/collapse_edit.{sample_label}.txt"
     shell:
         """
         python {SCRIPT_PATH}/collapse_edits_into_bed.py \
@@ -288,22 +321,27 @@ rule collapse_edits:
             {output}
         """
 
-rule homer_with_expanded_edits:
+
+rule homer_with_on_genome_coordinate:
     input:
         stamp="output/edits/expanded_bed/{stamp_sample_label}.expandbed",
         # use either external apobec library or internal ones
-        ctrl=lambda wildcards:"output/edits/expanded_bed/{ctrl_sample_label}.expandbed" if wildcards.ctrl_sample_label in config['sample_labels'] 
-        else config['external_stamp_control'][wildcards.ctrl_sample_label]
+        ctrl=lambda wildcards: "output/edits/expanded_bed/{ctrl_sample_label}.expandbed" 
+            if wildcards.ctrl_sample_label in config['STAMP_control'] else
+            Path(config['external_stamp_control'][wildcards.ctrl_sample_label]['prefix'])/"output/edits/expanded_bed"/(config['external_stamp_control'][wildcards.ctrl_sample_label]['sample_name']+".expandbed")
     output:
         homer="output/edits/homer/{stamp_sample_label}.{ctrl_sample_label}/homerResults.html"
     params:
         error_out_file = "error_files/homer.{stamp_sample_label}.{ctrl_sample_label}",
         run_time = "1:00:00",
         cores = "1",
-        outdir = lambda wildcards, output: str(Path(output.homer).parent)
+        outdir = lambda wildcards, output: str(Path(output.homer).parent),
+        memory = 40000,
+    benchmark: "benchmarks/homer_expanded_edits.{stamp_sample_label}.{ctrl_sample_label}.txt"
+    container:
+        "docker://howardxu520/skipper:R_4.1.3_1"
     shell:
         """
-        module load homer
         findMotifsGenome.pl {input.stamp} \
             hg38 \
             {params.outdir} \

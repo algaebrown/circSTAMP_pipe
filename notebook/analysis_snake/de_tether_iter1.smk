@@ -1,41 +1,27 @@
 # to run differential expression analysis
 # from gtf files
-#snakemake -s de_tether_iter1.smk --cluster "qsub -l walltime={params.run_time} -l nodes=1:ppn={params.cores} -e {params.error_out_file} -q home-yeo" -j 15 --use-conda --conda-prefix /home/hsher/snakeconda -n
+"""
+snakemake -j 12 \
+    -s de_tether_iter1.smk \
+    --cluster "sbatch -t {params.run_time} -e {params.error_out_file} -o stdout/{rule} -p condo -q condo -A csd792 --tasks-per-node {params.cores} --job-name {rule} --mem {params.memory}" \
+    --use-conda \
+    --conda-prefix /tscc/nfs/home/hsher/snakeconda \
+    -n
+"""
+
 import pandas as pd
 from pathlib import Path
 import os
 
-workdir: '/home/hsher/scratch/circ_tether_iter1'
-
-################# COMPARISON #############
-# control, case
-# comparison = [
-#     ['circseq-bm-arr', 'circseq-bm-rar'],
-#     ['circseq-bm-arr', 'circseq-bm-rar11-nxt'],
-#     ['circseq-bm-rar', 'circseq-bm-rar11-nxt'],
-#     ['HEK_rar11', 'EV_rar11'],
-#     ['HEK_rar', 'HEK_rar11'],
-#     ['EV_rar11', 'TOB2_rar11'],
-#     ['EV_rar11', 'RBM15_rar11_down'],
-# ]
+workdir: '/tscc/projects/ps-yeolab5/hsher/Tao_circ_tether_de'
 
 try:
-    os.mkdir('error_out_file')
+    os.mkdir('error_files')
+    os.mkdir('stdout')
 except:
     pass
-################ MANIFEST ###############
-# RNase+, RNase-
-# manifest = [
-# ['/home/hsher/scratch/circ_truseq/output/circseq-bm-rar.gtf', '/home/hsher/scratch/circ_truseq/output/circseq-bm-rz.gtf'],
-# ['/home/hsher/scratch/circ_truseq/output/circseq-bm-arr.gtf', '/home/hsher/scratch/circ_truseq/output/circseq-bm-rz.gtf'],
-# ['/home/hsher/scratch/circ_nextera/output/circseq-bm-rar11-nxt.gtf', '/home/hsher/scratch/circ_truseq/output/circseq-bm-rz.gtf'],
-# ['/home/hsher/scratch/circ_nextera_iter2/output/HEK_rar11.gtf', '/home/hsher/scratch/circ_truseq_iter2/output/EV_rz.gtf'],
-# ['/home/hsher/scratch/circ_truseq_iter2/output/HEK_rar.gtf', '/home/hsher/scratch/circ_truseq_iter2/output/EV_rz.gtf'],
-# ['/home/hsher/scratch/circ_nextera_iter2/output/EV_rar11.gtf','/home/hsher/scratch/circ_truseq_iter2/output/EV_rz.gtf'],
-# ['/home/hsher/scratch/circ_nextera_iter2/output/TOB2_rar11.gtf','/home/hsher/scratch/circ_truseq_iter2/output/TOB2_rz.gtf'],
-# ['/home/hsher/scratch/circ_nextera_iter2_rbm15_down/output/RBM15_rar11_down.gtf', '/home/hsher/scratch/circ_truseq_iter2/output/RBM15_rz.gtf']
-# ]
-manifest = pd.read_csv('/home/hsher/projects/circSTAMP_pipe/notebook/deseq_tether_iter1.csv')
+
+manifest = pd.read_csv('/tscc/nfs/home/hsher/projects/circSTAMP_pipe/notebook/deseq_tether_iter1.csv')
 
 si_trials = [s for s in manifest['sample_label'] if s.startswith('si') and s != 'siNT_rar11']
 ov_trials = [s for s in manifest['sample_label'] if not s.startswith('si') and s != 'EV_rar11']
@@ -78,12 +64,12 @@ config = {'CIRICONFIG': '/home/hsher/projects/circSTAMP_pipe/ciriconfig_full.yam
 rule all:
     input:
         #expand("output/compare_to_rz/{sample_label}.gtf.tsv", sample_label = manifest['sample_label'].tolist()),
-        # expand("output/unadjusted_comparison/{sample_label_combination}.gtf.tsv", 
-        #     sample_label_combination = [c[0]+'.'+c[1] for c in comparison],
-        #     ),
-        expand("output/adjusted_comparison/{sample_label_combination}.gtf.tsv", 
+        expand("output/unadjusted_comparison/{sample_label_combination}.gtf.tsv", 
             sample_label_combination = [c[0]+'.'+c[1] for c in comparison],
             ),
+        # expand("output/adjusted_comparison/{sample_label_combination}.gtf.tsv", 
+        #     sample_label_combination = [c[0]+'.'+c[1] for c in comparison],
+        #     ),
 
 
 rule run_ciri_polyA_rnase_coorection:
@@ -103,6 +89,7 @@ rule run_ciri_polyA_rnase_coorection:
         run_time = "48:00:00",
         cores = "3",
         library_type=config['LIBRARY_TYPE'],
+        memory = 40000,
         #rnase=lambda wildcards: '--RNaseR output/Rnase' if manifest.loc[manifest['Sample']==wildcards.sample_label, 'Rnase'].iloc[0] else ''
         # https://github.com/bioinfo-biols/CIRIquant/issues/4
     conda:
@@ -130,8 +117,9 @@ rule run_ciri_de_compare_to_rz:
         error_out_file = "error_files/ciri.de.{sample_label}",
         run_time = "2:00:00",
         cores = "1",
+        memory = 40000,
     conda:
-        "/home/hsher/projects/circSTAMP_pipe/envs/ciriquant.yaml"
+        "/tscc/nfs/home/hsher/projects/circSTAMP_pipe/envs/ciriquant.yaml"
     shell:
         """
         CIRI_DE -n {input.gtf_control} \
@@ -147,15 +135,16 @@ rule run_ciri_de_compare_unadjusted:
         "output/unadjusted_comparison/{sample_label_control}.{sample_label_case}.gtf.tsv"
     params:
         error_out_file = "error_files/ciri.de.{sample_label_control}.{sample_label_case}",
-        run_time = "2:00:00",
+        run_time = "8:00:00",
         cores = "1",
+        memory = 320000,
     conda:
-        "/home/hsher/projects/circSTAMP_pipe/envs/ciriquant.yaml"
+        "/tscc/nfs/home/hsher/projects/circSTAMP_pipe/envs/ciriquant.yaml"
     shell:
         """
         CIRI_DE -n {input.gtf_control} \
         -c {input.gtf_case} \
-        -o {output}
+        -o {output} 
         """
 
 rule run_ciri_de_compare_adjusted:
@@ -168,8 +157,9 @@ rule run_ciri_de_compare_adjusted:
         error_out_file = "error_files/ciri.de.{sample_label_control}.{sample_label_case}",
         run_time = "8:00:00",
         cores = "2",
+        memory = 640000,
     conda:
-        "/home/hsher/projects/circSTAMP_pipe/envs/ciriquant.yaml"
+        "/tscc/nfs/home/hsher/projects/circSTAMP_pipe/envs/ciriquant.yaml"
     shell:
         """
         CIRI_DE -n {input.gtf_control} \
