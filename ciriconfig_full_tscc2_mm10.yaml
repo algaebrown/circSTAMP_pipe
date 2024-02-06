@@ -6,8 +6,8 @@ tools:
   samtools: /tscc/nfs/home/hsher/snakeconda/066c235eb0d002f363955bb2aeee7e46_/bin/samtools
 
 reference:
-  fasta: /tscc/nfs/home/hsher/gencode_coords/GRCh38.primary_assembly.genome.fa
-  gtf: /tscc/nfs/home/hsher/gencode_coords/gencode.v35.basic.annotation.gtf
-  bwa_index: /tscc/projects/ps-yeolab5/hsher/Tao_circSTAMP/bwa_gencode35
-  hisat_index: /tscc/projects/ps-yeolab5/hsher/Tao_circSTAMP/hisat_gencode35
+  fasta: /tscc/projects/ps-yeolab3/bay001/annotations/mm10/mm10.fa
+  gtf: /tscc/nfs/home/hsher/gencode_coords/gencode.vM25.basic.annotation.gtf
+  bwa_index: /tscc/projects/ps-yeolab5/hsher/Tao_circSTAMP/bwa_gencodevM25
+  hisat_index: /tscc/projects/ps-yeolab5/hsher/Tao_circSTAMP/hisat_gencodevM25
 

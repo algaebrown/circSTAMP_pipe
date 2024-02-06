@@ -1,6 +1,6 @@
 # Cell line specific circles, iteration 2
 workdir: /home/hsher/scratch/circ_nextera_iter13
-menifest: /home/hsher/projects/circSTAMP_pipe/notebook/nextera_iter13_RBM15_U2AF_STAMP.csv
+menifest: /home/hsher/projects/circSTAMP_pipe/notebook/nextera_iter5_13_RBM15_U2AF_STAMP.csv
 
 GFF: /home/hsher/gencode_coords/gencode.v35.basic.annotation.gff3  
 GTF: /home/hsher/gencode_coords/gencode.v35.basic.annotation.gtf  
@@ -30,7 +30,7 @@ EXPAND_LEN: 30
 SCRIPT_PATH: /home/hsher/projects/circSTAMP_pipe/scripts
 CIRCRIP_PATH: /home/hsher/bin/circRIP # where you downloaded https://github.com/bioinfolabwhu/circRIP/
 R_EXE: /projects/ps-yeolab4/software/R-4.1.2/bin/Rscript
-
+QC_TOOLS_PATH: /tscc/nfs/home/hsher/projects/QC_tools/
 
 RIP_comparison: # Here you specify what to use a background and what to use as input, these names have to be in manifest['Sample']
 fit_overdispersion_from: 
@@ -39,8 +39,13 @@ fit_overdispersion_from:
 STAMP:
   - RBM15_STAMP
   - YTHDF2_STAMP
+  - U2AF2
+  - IGF2BP2
+  - YTHDF2
 
 STAMP_control:
   - APOBEC1only
+  - APOBEC1_1
+  - APOBEC1_2
 
 external_stamp_control:

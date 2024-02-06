@@ -1,10 +1,6 @@
-# read1: /tscc/projects/ps-yeolab5/hsher/Tao_circSTAMP/test_data/quant/test_1.fq.gz
-# read2: /tscc/projects/ps-yeolab5/hsher/Tao_circSTAMP/test_data/quant/test_2.fq.gz
-# name: test
-# this one is the rar11 for different cell lines
-# it is the rar11, IGF and U2 STAMP thing
-workdir: /tscc/nfs/home/hsher/scratch/circ_nextera_iter11
-menifest: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/notebook/nextera_iter11_MonoPolySome.csv
+# Vaz a different kit like nextera
+workdir: /tscc/lustre/scratch/hsher/circ_nextera_iter15_vaz
+menifest: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/notebook/nextera_iter15_Vaz.csv
 
 GFF: /tscc/nfs/home/hsher/gencode_coords/gencode.v35.basic.annotation.gff3  
 GTF: /tscc/nfs/home/hsher/gencode_coords/gencode.v35.basic.annotation.gtf  
@@ -16,11 +12,12 @@ STAR_INDEX: /tscc/projects/ps-yeolab5/hsher/Tao_circSTAMP/star_2_7_gencode35
 INDEX_NAME: HG38
 
 
-READ1_ADAPTOR: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/input/nextera.fasta
-READ2_ADAPTOR:  /tscc/nfs/home/hsher/projects/circSTAMP_pipe/input/nextera.fasta
+READ1_ADAPTOR: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/input/vaz.fasta
+READ2_ADAPTOR:  /tscc/nfs/home/hsher/projects/circSTAMP_pipe/input/vaz.fasta
 
 # settings for Ciri
-CIRICONFIG: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/ciriconfig_full.yaml
+CIRICONFIG: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/ciriconfig_full_tscc2.yaml
+CIRCRIP_PATH: /home/hsher/bin/circRIP
 LIBRARY_TYPE: 2 #Library type, 0: unstranded, 1: read1 match the sense strand, 2: read1 match the antisense strand (default: 0)
 
 # ANALYSIS # cut -f 1,2 genome.fa.fai > chrom.sizes
@@ -33,24 +30,15 @@ QC_TOOLS_PATH: /tscc/nfs/home/hsher/projects/QC_tools/
 
 # circRIP
 SCRIPT_PATH: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/scripts
-CIRCRIP_PATH: /tscc/nfs/home/hsher/bin/circRIP # where you downloaded https://github.com/bioinfolabwhu/circRIP/
 R_EXE: /tscc/projects/ps-yeolab4/software/R-4.1.2/bin/Rscript
 
 
 RIP_comparison: # Here you specify what to use a background and what to use as input, these names have to be in manifest['Sample']
-  Monosome_rep1:
-    ip: Mono1
-    in: IN1
-  Monosome_rep2:
-    ip: Mono2
-    in: IN2
-  Polysome_rep1:
-    ip: Poly1
-    in: IN1
-  Polysome_rep2:
-    ip: Poly2
-    in: IN2
+fit_overdispersion_from: 
 
-fit_overdispersion_from:
-  - IN1
-  - IN2
+# STAMP
+STAMP:
+
+STAMP_control:
+
+external_stamp_control:

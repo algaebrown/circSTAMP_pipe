@@ -1,0 +1,44 @@
+# Synapse mouse
+workdir: /tscc/lustre/scratch/hsher/circ_nextera_iter15
+menifest: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/notebook/nextera_iter15_synapse.csv
+
+GFF: /tscc/nfs/home/hsher/gencode_coords/gencode.vM25.basic.annotation.gff3
+GTF: /tscc/nfs/home/hsher/gencode_coords/gencode.vM25.basic.annotation.gtf
+GENOMEFA: /tscc/projects/ps-yeolab3/bay001/annotations/mm10/mm10.fa
+GENOMEFAI: /tscc/projects/ps-yeolab3/bay001/annotations/mm10/mm10.fa.fai
+BWA_INDEX: /tscc/projects/ps-yeolab5/hsher/Tao_circSTAMP/bwa_gencodevM25
+HISAT_INDEX: /tscc/projects/ps-yeolab5/hsher/Tao_circSTAMP/hisat_gencodevM25
+STAR_INDEX: /tscc/projects/ps-yeolab3/bay001/annotations/mm10/star_2_7_6a_gencode25_sjdb/
+INDEX_NAME: mm10_vM25
+
+
+READ1_ADAPTOR: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/input/nextera.fasta
+READ2_ADAPTOR:  /tscc/nfs/home/hsher/projects/circSTAMP_pipe/input/nextera.fasta
+
+# settings for Ciri
+CIRICONFIG: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/ciriconfig_full_tscc2_mm10.yaml
+CIRCRIP_PATH: /home/hsher/bin/circRIP
+LIBRARY_TYPE: 2 #Library type, 0: unstranded, 1: read1 match the sense strand, 2: read1 match the antisense strand (default: 0)
+
+# ANALYSIS # cut -f 1,2 genome.fa.fai > chrom.sizes
+CHROM_SIZE: /tscc/projects/ps-yeolab3/bay001/annotations/mm10/mm10.chrom.sizes
+ANNOTATOR_SPECIES: 
+GTFDB: 
+edit_thres: 0.9999
+EXPAND_LEN: 30
+QC_TOOLS_PATH: /tscc/nfs/home/hsher/projects/QC_tools/
+
+# circRIP
+SCRIPT_PATH: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/scripts
+R_EXE: /tscc/projects/ps-yeolab4/software/R-4.1.2/bin/Rscript
+
+
+RIP_comparison: # Here you specify what to use a background and what to use as input, these names have to be in manifest['Sample']
+fit_overdispersion_from: 
+
+# STAMP
+STAMP:
+
+STAMP_control:
+
+external_stamp_control:

@@ -1,6 +1,6 @@
 # Cell line specific circles, iteration 2
-workdir: /tscc/lustre/scratch/hsher/circ_nextera_iter13_test
-menifest: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/notebook/nextera_iter13_RBM15_U2AF_STAMP.csv
+workdir: /tscc/lustre/scratch/hsher/circ_nextera_iter13
+menifest: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/notebook/nextera_iter5_13_RBM15_U2AF_STAMP.csv
 
 GFF: /tscc/nfs/home/hsher/gencode_coords/gencode.v35.basic.annotation.gff3  
 GTF: /tscc/nfs/home/hsher/gencode_coords/gencode.v35.basic.annotation.gtf  
@@ -16,7 +16,7 @@ READ1_ADAPTOR: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/input/nextera.fasta
 READ2_ADAPTOR:  /tscc/nfs/home/hsher/projects/circSTAMP_pipe/input/nextera.fasta
 
 # settings for Ciri
-CIRICONFIG: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/ciriconfig_full.yaml
+CIRICONFIG: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/ciriconfig_full_tscc2.yaml
 CIRCRIP_PATH: /home/hsher/bin/circRIP
 LIBRARY_TYPE: 2 #Library type, 0: unstranded, 1: read1 match the sense strand, 2: read1 match the antisense strand (default: 0)
 
@@ -26,6 +26,7 @@ ANNOTATOR_SPECIES: GRCh38
 GTFDB: /tscc/nfs/home/hsher/gencode_coords/gencode.v35.gtf.db
 edit_thres: 0.9999
 EXPAND_LEN: 30
+QC_TOOLS_PATH: /tscc/nfs/home/hsher/projects/QC_tools/
 
 # circRIP
 SCRIPT_PATH: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/scripts
@@ -39,8 +40,13 @@ fit_overdispersion_from:
 STAMP:
   - RBM15_STAMP
   - YTHDF2_STAMP
+  - U2AF2
+  - IGF2BP2
+  - YTHDF2
 
 STAMP_control:
   - APOBEC1only
+  - APOBEC1_1
+  - APOBEC1_2
 
 external_stamp_control:
