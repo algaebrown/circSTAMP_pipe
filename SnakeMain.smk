@@ -1,13 +1,6 @@
-"""
-snakemake -s SnakeMain.smk \
-    -j 12 \
-    --configfile config/tao_nextera16.yaml \
-    --profile profiles/tscc2 \
-    --until ciri_run_ciri_RNASE \
-    -n
-"""
 import pandas as pd
 import os
+workdir: config['workdir']
 locals().update(config)
 
 manifest = pd.read_csv(config['menifest'])
@@ -19,13 +12,16 @@ assert manifest['fastq2'].apply(os.path.isfile).all()
 
 sample_labels = manifest['Sample'].tolist()
 config['sample_labels']=sample_labels
-workdir: config['workdir']
+
 
 # handle exception
 for key in ['STAMP', 'STAMP_control', 'fit_overdispersion_from']:
     try:
         if config[key] is None:
             config[key] = []
+            # placeholder
+            config['REF_fwd'] = 'C'
+            config['REF_rev'] = 'T'
     except KeyError:
         config[key] = []
 
@@ -50,13 +46,14 @@ except Exception as e:
 
 # edit calling
 NREAD=5
-REF_fwd='C' # C to T
-REF_rev='G' # G to A
+revcomp = {'C': 'G',
+           'G': 'C',
+           'A': 'T',
+           'T': 'A'}
+config['REF_rev'] = revcomp[REF_fwd]
+config['ALT_rev'] = revcomp[ALT_fwd]
 
-ALT_fwd='T'
-ALT_rev='A'
 
-locals().update(config)
 
 # RIP comparisons
 if config['RIP_comparison'] is not None:
@@ -69,20 +66,20 @@ else:
 
 rule all:
     input:
+        # preprocessing
         expand("output/fastqs/{sample_label}-trimmed.log", sample_label = sample_labels),
-        expand("output/{sample_label}.gtf", sample_label = sample_labels),
         expand("output/bams/{sample_label}.Aligned.sortedByCoord.out.bam.bai", sample_label = sample_labels),
         expand("fastQC/{sample_label}-trimmed-pair1_fastqc/fastqc_data.txt", sample_label = sample_labels),
         'QC/skewer_log.csv',
         'QC/fastQC_basic_summary.r1.csv',
         "QC/genome_mapping_stats.csv",
-        "output/featureCount_output.tsv",
-        "output/featureCount_output_mRNA.tsv",
-        "output/circles_gc_content.nuc",
-        expand("output/circRIP/{comparisons}", comparisons = comparisons),
-        expand("output/circRIP/homer/{comparisons}.homer", comparisons = comparisons),
+        # CIRI
+        expand("output/{sample_label}.gtf", sample_label = sample_labels),
+        # RIP
+        expand("output/circRIP/{comparisons}", comparisons = comparisons) if CIRCRIP_PATH else [],
+        expand("output/circRIP/homer/{comparisons}.homer", comparisons = comparisons) if CIRCRIP_PATH else [],
         expand("output/RIP/{comparisons}.csv", comparisons = comparisons2),
-        
+        # STAMP
         expand("output/edits/{sample_label}.final_edit_score.fa"
         , sample_label = sample_labels),
         expand("output/edits/homer/{stamp_sample_label}.{ctrl_sample_label}.homer",

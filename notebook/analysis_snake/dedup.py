@@ -18,9 +18,10 @@ rule dedup:
         error_out_file = "error_files/samtools.{sample_label}",
         run_time = "2:00:00",
         cores = "1",
+    container:
+        "docker://howardxu520/skipper:samtools_1.17_bedtools_2.31.0"
     shell:
         """
-        module load samtools
 
         samtools collate -o {wildcards.sample_label}.collate.bam {input.bam}
         samtools fixmate -m {wildcards.sample_label}.collate.bam {wildcards.sample_label}.fixmate.bam

@@ -1,5 +1,5 @@
 # human breast cancer growing on nude mice
-workdir: /tscc/lustre/scratch/hsher/circ_nextera_iter16_miceref
+workdir: /tscc/nfs/home/hsher/ps-yeolab5/circ_nextera_iter16_miceref
 menifest: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/notebook/nextera_iter16_nudemice.csv
 
 GFF: /tscc/nfs/home/hsher/gencode_coords/gencode.vM25.basic.annotation.gff3
@@ -26,11 +26,9 @@ ANNOTATOR_SPECIES:
 GTFDB: 
 edit_thres: 0.9999
 EXPAND_LEN: 30
-QC_TOOLS_PATH: /tscc/nfs/home/hsher/projects/QC_tools/
 
 # circRIP
 SCRIPT_PATH: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/scripts
-R_EXE: /tscc/projects/ps-yeolab4/software/R-4.1.2/bin/Rscript
 
 
 RIP_comparison: # Here you specify what to use a background and what to use as input, these names have to be in manifest['Sample']

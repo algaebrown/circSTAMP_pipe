@@ -52,8 +52,8 @@ rule run_ciri_de_compare_unadjusted:
         run_time = "8:00:00",
         cores = "1",
         memory = 320000,
-    conda:
-        "/tscc/nfs/home/hsher/projects/circSTAMP_pipe/envs/ciriquant.yaml"
+    container:
+        "docker://mortreux/ciriquant:v1.1.2"
     shell:
         """
         CIRI_DE -n {input.gtf_control} \

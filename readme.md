@@ -2,6 +2,7 @@
 ## Installation
 ### Snakemake:
 - Yeolab internal users: I suggest you to install your own snakemake. The snakemake module on TSCC 2.0 contaminates my python env. `conda create -n snakemake; conda install snakemake==7.3.8`
+
 ### Singularity
 - Yeolab internal users: `module load singularitypro`. 
 - External user: Preferably ask sys admin to install singularity for you.

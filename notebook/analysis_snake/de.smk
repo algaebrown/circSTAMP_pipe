@@ -99,8 +99,8 @@ rule run_ciri_polyA_rnase_coorection:
         library_type=config['LIBRARY_TYPE'],
         #rnase=lambda wildcards: '--RNaseR output/Rnase' if manifest.loc[manifest['Sample']==wildcards.sample_label, 'Rnase'].iloc[0] else ''
         # https://github.com/bioinfo-biols/CIRIquant/issues/4
-    conda:
-        "/home/hsher/projects/circSTAMP_pipe/envs/ciriquant.yaml"
+    container:
+        "docker://mortreux/ciriquant:v1.1.2"
     shell:
         """
         CIRIquant -t {params.cores} \
@@ -124,8 +124,8 @@ rule run_ciri_de_compare_to_rz:
         error_out_file = "error_files/ciri.de.{sample_label}",
         run_time = "2:00:00",
         cores = "1",
-    conda:
-        "/home/hsher/projects/circSTAMP_pipe/envs/ciriquant.yaml"
+    container:
+        "docker://mortreux/ciriquant:v1.1.2"
     shell:
         """
         CIRI_DE -n {input.gtf_control} \
@@ -143,8 +143,8 @@ rule run_ciri_de_compare_unadjusted:
         error_out_file = "error_files/ciri.de.{sample_label_control}.{sample_label_case}",
         run_time = "2:00:00",
         cores = "1",
-    conda:
-        "/home/hsher/projects/circSTAMP_pipe/envs/ciriquant.yaml"
+    container:
+        "docker://mortreux/ciriquant:v1.1.2"
     shell:
         """
         CIRI_DE -n {input.gtf_control} \
@@ -162,8 +162,8 @@ rule run_ciri_de_compare_adjusted:
         error_out_file = "error_files/ciri.de.{sample_label_control}.{sample_label_case}",
         run_time = "8:00:00",
         cores = "2",
-    conda:
-        "/home/hsher/projects/circSTAMP_pipe/envs/ciriquant.yaml"
+    container:
+        "docker://mortreux/ciriquant:v1.1.2"
     shell:
         """
         CIRI_DE -n {input.gtf_control} \

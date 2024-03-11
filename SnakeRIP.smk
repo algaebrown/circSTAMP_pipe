@@ -1,13 +1,11 @@
 # to run circRIP pipeline
 import pandas as pd
+locals().update(config)
 manifest = pd.read_csv(config['menifest'])
-print(manifest)
-
 sample_labels = manifest['Sample'].tolist()
-SCRIPT_PATH = config['SCRIPT_PATH']
-CIRCRIP_PATH = config['CIRCRIP_PATH']
-R_EXE = config['R_EXE']
 
+
+### CIRC-RIP: it kinda doesn't work. Rules are set for benchmarking ###
 ''' convert gtf file to .circ file format as required by circRIP '''
 rule gtf_to_circ:
     input:
@@ -93,8 +91,7 @@ rule homer:
         """
         homer2 denovo -i {input.foreground} -b {input.background} -strand + -o {output}
         """
-
-### Rules for overdispersion ###
+### My way of calling enrichment ###
 rule get_counts:
     input:
         expand(expand("output/{sample_label}.gtf", sample_label = sample_labels))
@@ -113,9 +110,6 @@ rule get_counts:
             {output}
         """
 
-
-    
-
 rule fit_overdispersion:
     input:
         "output/count_table.tsv"
@@ -126,9 +120,11 @@ rule fit_overdispersion:
         run_time = "0:30:00",
         cores = "1",
         reps = ','.join(config['fit_overdispersion_from'])
+    container:
+        "docker://howardxu520/skipper:R_4.1.3_1"
     shell:
         """
-        {R_EXE} --vanilla {SCRIPT_PATH}/fit_overdispersion.R \
+        Rscript --vanilla {SCRIPT_PATH}/fit_overdispersion.R \
             {input} \
             {params.reps} \
             {output}

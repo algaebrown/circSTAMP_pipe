@@ -126,9 +126,10 @@ rule gc_cotent:
         genome=config['GENOMEFA'],
         memory = 1000,
     benchmark: "benchmarks/gc_content.txt"
+    container:
+        "docker://howardxu520/skipper:bedtools_2.31.0"
     shell:
         """
-        module load bedtools
         cat {input.beds} | sort -k1,1 -k2,2n -k3,3n | uniq > {output.megabed}
         bedtools nuc -s -fi {params.genome} -bed {output.megabed} > {output.nuc}
         """

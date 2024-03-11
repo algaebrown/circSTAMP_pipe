@@ -42,8 +42,8 @@ rule run_ciri_de_compare_unadjusted:
         error_out_file = "error_files/ciri.de.{sample_label_control}.{sample_label_case}",
         run_time = "6:00:00",
         cores = "1",
-    conda:
-        "/home/hsher/projects/circSTAMP_pipe/envs/ciriquant.yaml"
+    container:
+        "docker://mortreux/ciriquant:v1.1.2"
     shell:
         """
         CIRI_DE -n {input.gtf_control} \

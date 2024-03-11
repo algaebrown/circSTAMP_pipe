@@ -41,9 +41,11 @@ rule bw:
         cores = "2",
         memory = "10000",
         chr_size = config['CHROM_SIZE']
+    container:
+        "docker://howardxu520/skipper:bigwig_1.0"
     shell:
         """
-        module load ucsctools
+        export LC_ALL=C
         sort -k1,1 -k2,2n {input.sailor} > {output.sorted}
         bedGraphToBigWig {output.sorted} {params.chr_size} {output.bw}
         """
@@ -62,10 +64,11 @@ rule filter_edits_and_expand:
         chr_size = config['CHROM_SIZE'],
         thres = config['edit_thres'],
         window_len = config['EXPAND_LEN']
+    container:
+        "docker://howardxu520/skipper:bedtools_2.31.0"
     shell:
         """
         awk '{{ if ($4 > {params.thres}) print }}' {input}  > {output.filtered}
-        module load bedtools;
         bedtools slop -i {output.filtered} -g {params.chr_size} -b {params.window_len} > {output.expand}
         """
 
@@ -125,8 +128,9 @@ rule motif_analysis_APO_as_bg:
         run_time="00:30:00",
         error_out_file = "error_files/motif_apo_as_bg.{rbp_label}",
         cores = "1",
+    container:
+        "docker://howardxu520/skipper:Homer_4.11"
     shell:
         '''
-        module load homer
         homer2 denovo -i {input.rbp_fa} -b {input.apo_fa} -o {output}
         '''

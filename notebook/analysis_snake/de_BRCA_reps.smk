@@ -1,17 +1,15 @@
 # to run differential expression analysis
 # from gtf files
 """
-snakemake -s /tscc/nfs/home/hsher/projects/circSTAMP_pipe/notebook/analysis_snake/de_synapse_reps.smk \
---profile /tscc/nfs/home/hsher/projects/circSTAMP_pipe/profiles/tscc2_single --use-singularity \
---singularity-prefix /tscc/lustre/scratch/hsher/singularity/
-
+snakemake -s /tscc/nfs/home/hsher/projects/circSTAMP_pipe/notebook/analysis_snake/de_BRCA_reps.smk \
+--profile /tscc/nfs/home/hsher/projects/circSTAMP_pipe/profiles/tscc2_single
 """
 
 import pandas as pd
 from pathlib import Path
 import os
 
-workdir: '/tscc/projects/ps-yeolab5/hsher/Tao_circ_synapse_de'
+workdir: '/tscc/projects/ps-yeolab5/hsher/Tao_circ_BRCA_de'
 
 ################# COMPARISON #############
 
@@ -23,46 +21,55 @@ try:
     os.mkdir('stdout')
 except:
     pass
+try:
+    os.mkdir('output')
+except:
+    pass
 
 ################ MANIFEST ###############
 # ciriquant conda env /home/hsher/snakeconda/93c88b426ffde1273db2baa3da0ab4d6
 
 name2gtf = {}
 
-indir1 = '/tscc/projects/ps-yeolab5/hsher/circ_nextera_iter15/output'
+indir1 = '/tscc/projects/ps-yeolab3/tao/CIRI/TBNC_rerun/output' ### CHANGE HERE TO CONTAIN THE CIRI GTF FILES
 for f in Path(indir1).glob('*.gtf'):
-    name2gtf[f.name.split('_rar11')[0]]=str(f)
+    name = f.name.replace('_rar11.gtf', ''
+        ).replace('_4', '_1' #### WHY DO YOU NAME 231_4 instead of 231_1  !!!! I hate it
+        ).replace('_5', '_2'
+        ).replace('_6', '_3')
+        
+    name2gtf[name]=str(f)
 
 name2stringtie = {}
 for name in name2gtf:
     f = Path(name2gtf[name])
     folder = f.parent
-    print(f.name.replace('.gtf', ''))
     name2stringtie[name] = str(folder/'gene'/ (str(f.name.replace('.gtf', '')) +'_out.gtf'))
 
+print(name2gtf)
+
 # make manifest
-#ctrl = 'tot'
-ctrl = 'cyt'
-others = ['nuc', 'syn']
+ctrl = '10A'
+others = ['149', '231', '436']
 for other in others:
     df = pd.DataFrame([
-    [f'{other}_rep1', name2gtf[f'55_{other}'], 'T'],
-    [f'{other}_rep2', name2gtf[f'56_{other}'], 'T'],
-    [f'{other}_rep3', name2gtf[f'57_{other}'], 'T'],
-    [f'{ctrl}_rep1', name2gtf[f'55_{ctrl}'], 'C'],
-    [f'{ctrl}_rep2', name2gtf[f'56_{ctrl}'], 'C'],
-    [f'{ctrl}_rep3', name2gtf[f'57_{ctrl}'], 'C'],
+    [f'{other}_rep1', name2gtf[f'{other}_1'], 'T'],
+    [f'{other}_rep2', name2gtf[f'{other}_2'], 'T'],
+    [f'{other}_rep3', name2gtf[f'{other}_3'], 'T'],
+    [f'{ctrl}_rep1', name2gtf[f'{ctrl}_1'], 'C'],
+    [f'{ctrl}_rep2', name2gtf[f'{ctrl}_2'], 'C'],
+    [f'{ctrl}_rep3', name2gtf[f'{ctrl}_3'], 'C'],
     ], columns = ['sample_name', 'path', 'group'])
 
     df.to_csv(f'output/{other}.{ctrl}.lst', sep = '\t', header = False, index = False)
 
     df_stringtie = pd.DataFrame([
-        [f'{other}_rep1', name2stringtie[f'55_{other}']],
-        [f'{other}_rep2', name2stringtie[f'56_{other}']],
-        [f'{other}_rep3', name2stringtie[f'57_{other}']],
-        [f'{ctrl}_rep1', name2stringtie[f'55_{ctrl}']],
-        [f'{ctrl}_rep2', name2stringtie[f'56_{ctrl}']],
-        [f'{ctrl}_rep3', name2stringtie[f'57_{ctrl}']],
+        [f'{other}_rep1', name2stringtie[f'{other}_1']],
+        [f'{other}_rep2', name2stringtie[f'{other}_2']],
+        [f'{other}_rep3', name2stringtie[f'{other}_3']],
+        [f'{ctrl}_rep1', name2stringtie[f'{ctrl}_1']],
+        [f'{ctrl}_rep2', name2stringtie[f'{ctrl}_2']],
+        [f'{ctrl}_rep3', name2stringtie[f'{ctrl}_3']],
     ], columns = ['sample_name', 'path'])
 
     df_stringtie.to_csv(f'output/{other}.{ctrl}.samplegene.lst', sep = '\t', header = False, index = False)

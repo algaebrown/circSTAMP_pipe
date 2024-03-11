@@ -24,13 +24,6 @@ rule pileup:
             --annotate FORMAT/AD,FORMAT/ADF,FORMAT/ADR > {output.vcf}
         """
 
-
-REF_fwd='C' # C to T
-REF_rev='G' # G to A
-
-ALT_fwd='T'
-ALT_rev='A'
-
 rule filter_variants:
     # need to consider strand specific thing
     input:
@@ -234,10 +227,11 @@ rule fetch_sequence_around_edit:
         size = 100, # based on Kris Branan's paper
         memory = 40000,
     benchmark: "benchmarks/fetch_edit_sequence.{sample_label}.txt"
+    container:
+        "docker://howardxu520/skipper:bedtools_2.31.0"
     shell:
         """
         awk 'NR>1 {{print $14,$13,$13+1,$2,$12,$15}}' OFS='\t' {input.edits} > {output.bed}
-        module load bedtools
             bedtools slop -i {output.bed} -g {input.genome_sizes} -b {params.size} \
                 | sort -k1,1 -k2,2n -k3,3n \
                 > {output.bed_expanded}
@@ -263,11 +257,11 @@ rule significant_edits:
         cores = "1",
         memory = 40000,
     benchmark: "benchmarks/sig_edits.{sample_label}.txt"
+    container:
+        "docker://howardxu520/skipper:bedtools_2.31.0"
     shell:
         """
             awk '$12 < 0.2 {{print $14,$13,$13+1,$2,$12,$15}}' OFS='\t' {input.edits} > {output.sig_edit}
-
-            module load bedtools
             bedtools slop -i {output.sig_edit} -g {input.genome_sizes} -b 50 \
                 | sort -k1,1 -k2,2n -k3,3n \
                 | bedtools merge -s -c 4,5,6 -o  collapse,collapse,distinct > {output.edit_expanded}
