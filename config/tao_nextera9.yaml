@@ -14,7 +14,6 @@ BWA_INDEX: /tscc/projects/ps-yeolab5/hsher/Tao_circSTAMP/bwa_gencode35
 HISAT_INDEX: /tscc/projects/ps-yeolab5/hsher/Tao_circSTAMP/hisat_gencode35
 STAR_INDEX: /tscc/projects/ps-yeolab5/hsher/Tao_circSTAMP/star_2_7_gencode35
 INDEX_NAME: HG38
-QC_TOOLS_PATH: /tscc/nfs/home/hsher/projects/QC_tools/
 
 READ1_ADAPTOR: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/input/nextera.fasta
 READ2_ADAPTOR:  /tscc/nfs/home/hsher/projects/circSTAMP_pipe/input/nextera.fasta
@@ -33,6 +32,5 @@ EXPAND_LEN: 30
 # circRIP
 SCRIPT_PATH: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/scripts
 CIRCRIP_PATH: /tscc/nfs/home/hsher/bin/circRIP # where you downloaded https://github.com/bioinfolabwhu/circRIP/
-R_EXE: /projects/ps-yeolab4/software/R-4.1.2/bin/Rscript
 
 RIP_comparison: # Here you specify what to use a background and what to use as input, these names have to be in manifest['Sample']

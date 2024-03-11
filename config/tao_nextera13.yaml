@@ -29,8 +29,6 @@ EXPAND_LEN: 30
 # circRIP
 SCRIPT_PATH: /home/hsher/projects/circSTAMP_pipe/scripts
 CIRCRIP_PATH: /home/hsher/bin/circRIP # where you downloaded https://github.com/bioinfolabwhu/circRIP/
-R_EXE: /projects/ps-yeolab4/software/R-4.1.2/bin/Rscript
-QC_TOOLS_PATH: /tscc/nfs/home/hsher/projects/QC_tools/
 
 RIP_comparison: # Here you specify what to use a background and what to use as input, these names have to be in manifest['Sample']
 fit_overdispersion_from: 

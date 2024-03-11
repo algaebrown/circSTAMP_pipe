@@ -36,7 +36,7 @@ rule gather_trimming_stat:
         "envs/metadensity.yaml"
     shell:
         """
-        python {QC_TOOLS_PATH}/trimming_stat.py "{input.tr1}" {output.tr1}
+        python {SCRIPT_PATH}/trimming_stat.py "{input.tr1}" {output.tr1}
         """
 rule gather_fastqc_report:
     input:
@@ -57,8 +57,8 @@ rule gather_fastqc_report:
         "envs/metadensity.yaml"
     shell:
         """
-        python {QC_TOOLS_PATH}/fastqc_io.py -i "{input.fq1}" -p {output.passfail1} -b {output.basic1}
-        python {QC_TOOLS_PATH}/fastqc_io.py -i "{input.fq2}" -p {output.passfail2} -b {output.basic2}
+        python {SCRIPT_PATH}/fastqc_io.py -i "{input.fq1}" -p {output.passfail1} -b {output.basic1}
+        python {SCRIPT_PATH}/fastqc_io.py -i "{input.fq2}" -p {output.passfail2} -b {output.basic2}
         """
 rule gather_GENOME_mapstat:
     input:
@@ -76,5 +76,5 @@ rule gather_GENOME_mapstat:
         job_name = "gather_stat",
     shell:
         """
-        python {QC_TOOLS_PATH}/star_mapping_stat_io.py -i "{input}" -o {output}
+        python {SCRIPT_PATH}/star_mapping_stat_io.py -i "{input}" -o {output}
         """
