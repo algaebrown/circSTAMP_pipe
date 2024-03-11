@@ -80,8 +80,8 @@ rule prep_ciriquant_de:
         error_out_file = "error_files/ciri.de.{sample_label_control}.{sample_label_case}",
         run_time = "2:00:00",
         cores = "1",
-    conda:
-        "/home/hsher/projects/circSTAMP_pipe/envs/ciriquant.yaml"
+    container:
+        "docker://mortreux/ciriquant:v1.1.2"
     shell:
         """
         prep_CIRIquant -i {input} \
@@ -101,8 +101,8 @@ rule prep_stringtie:
         error_out_file = "error_files/ciri.de.{sample_label_control}.{sample_label_case}",
         run_time = "2:00:00",
         cores = "1",
-    conda:
-        "/home/hsher/projects/circSTAMP_pipe/envs/ciriquant.yaml"
+    container:
+        "docker://mortreux/ciriquant:v1.1.2"
     shell:
         """
         python /home/hsher/projects/circSTAMP_pipe/scripts/prepDE.py \
@@ -121,8 +121,8 @@ rule run_ciri_de_compare_unadjusted:
         error_out_file = "error_files/ciri.de.{sample_label_control}.{sample_label_case}",
         run_time = "6:00:00",
         cores = "1",
-    conda:
-        "/home/hsher/projects/circSTAMP_pipe/envs/ciriquant.yaml"
+    container:
+        "docker://mortreux/ciriquant:v1.1.2"
     shell:
         """
         CIRI_DE_replicate --lib {input.lib_info} \
