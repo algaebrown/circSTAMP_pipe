@@ -29,7 +29,7 @@ config['sample_labels']=sample_labels
 
 
 # handle exception
-for key in ['STAMP', 'STAMP_control', 'fit_overdispersion_from']:
+for key in ['STAMP', 'STAMP_control']:
     try:
         if config[key] is None:
             print(f'not a STAMP experiment, {key} is empty')
@@ -39,6 +39,9 @@ for key in ['STAMP', 'STAMP_control', 'fit_overdispersion_from']:
             config['ALT_fwd'] = 'T'
     except KeyError:
         config[key] = []
+        # placeholder
+        config['REF_fwd'] = 'C'
+        config['ALT_fwd'] = 'T'
 
 for key in ['external_stamp_control']:
     try:
@@ -98,9 +101,9 @@ rule all:
         'output/circle_summary/FSJ_counts.csv',
         'output/circle_summary/junction_ratio.csv',
         
-        # RIP
-        expand("output/circRIP/{comparisons}", comparisons = comparisons) if CIRCRIP_PATH else [],
-        expand("output/circRIP/homer/{comparisons}.homer", comparisons = comparisons) if CIRCRIP_PATH else [],
+        # RIP (circRIP is not good)
+        # expand("output/circRIP/{comparisons}", comparisons = comparisons) if CIRCRIP_PATH else [],
+        # expand("output/circRIP/homer/{comparisons}.homer", comparisons = comparisons) if CIRCRIP_PATH else [],
         expand("output/RIP/{comparisons}.csv", comparisons = comparisons2),
         # STAMP
         expand("output/edits/{sample_label}.final_edit_score.fa"
