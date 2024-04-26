@@ -78,3 +78,26 @@ rule gather_GENOME_mapstat:
         """
         python {SCRIPT_PATH}/star_mapping_stat_io.py -i "{input}" -o {output}
         """
+
+rule gather_CIRI_stats:
+    input:
+        expand("output/{sample_label}.gtf", sample_label = sample_labels)
+    output:
+        'output/circle_summary/all_circle_annotation.csv',
+        'output/circle_summary/ciri_stats.csv',
+        'output/circle_summary/circ_type_counts.csv',
+        'output/circle_summary/BSJ_counts.csv',
+        'output/circle_summary/FSJ_counts.csv',
+        'output/circle_summary/junction_ratio.csv',
+    conda:
+        "envs/metadensity.yaml"
+    params:
+        error_out_file = "error_files/ciristat",
+        run_time = "00:40:00",
+        cores = "1",
+        memory = "10000",
+        job_name = "gather_stat",
+    shell:
+        """
+        python {SCRIPT_PATH}/ciri_stats.py "{input}" output/circle_summary
+        """
