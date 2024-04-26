@@ -1,13 +1,27 @@
 import pandas as pd
 import os
 workdir: config['workdir']
-locals().update(config)
 
+locals().update(config)
 manifest = pd.read_csv(config['menifest'])
 
 # check file existence
 assert manifest['fastq1'].apply(os.path.isfile).all()
 assert manifest['fastq2'].apply(os.path.isfile).all()
+assert os.path.isfile(config['CIRICONFIG'])
+
+# check config is correct
+import yaml
+with open(config['CIRICONFIG'], 'r') as file:
+    ciriconfig = yaml.safe_load(file)
+
+# check if ciriconfig as the right key and path exists
+for key in ['bwa', 'hisat2', 'stringtie', 'samtools']:
+    assert key in ciriconfig['tools']
+    assert os.path.isfile(ciriconfig['tools'][key])
+
+assert ciriconfig['reference']['fasta']==config['GENOMEFA']
+assert ciriconfig['reference']['gtf']==config['GTF']
 
 
 sample_labels = manifest['Sample'].tolist()
@@ -18,10 +32,11 @@ config['sample_labels']=sample_labels
 for key in ['STAMP', 'STAMP_control', 'fit_overdispersion_from']:
     try:
         if config[key] is None:
+            print(f'not a STAMP experiment, {key} is empty')
             config[key] = []
             # placeholder
             config['REF_fwd'] = 'C'
-            config['REF_rev'] = 'T'
+            config['ALT_fwd'] = 'T'
     except KeyError:
         config[key] = []
 
@@ -50,9 +65,10 @@ revcomp = {'C': 'G',
            'G': 'C',
            'A': 'T',
            'T': 'A'}
-config['REF_rev'] = revcomp[REF_fwd]
-config['ALT_rev'] = revcomp[ALT_fwd]
 
+config['REF_rev'] = revcomp[config['REF_fwd']]
+config['ALT_rev'] = revcomp[config['ALT_fwd']]
+locals().update(config)
 
 
 # RIP comparisons
@@ -75,6 +91,13 @@ rule all:
         "QC/genome_mapping_stats.csv",
         # CIRI
         expand("output/{sample_label}.gtf", sample_label = sample_labels),
+        'output/circle_summary/all_circle_annotation.csv',
+        'output/circle_summary/ciri_stats.csv',
+        'output/circle_summary/circ_type_counts.csv',
+        'output/circle_summary/BSJ_counts.csv',
+        'output/circle_summary/FSJ_counts.csv',
+        'output/circle_summary/junction_ratio.csv',
+        
         # RIP
         expand("output/circRIP/{comparisons}", comparisons = comparisons) if CIRCRIP_PATH else [],
         expand("output/circRIP/homer/{comparisons}.homer", comparisons = comparisons) if CIRCRIP_PATH else [],

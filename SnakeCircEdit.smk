@@ -1,6 +1,7 @@
 from pathlib import Path
 import pandas as pd
 locals().update(config)
+print(config)
 
 
 rule pileup:
@@ -58,10 +59,10 @@ rule gzip_index_vcf:
         memory = 40000,
     benchmark: "benchmarks/index_vcf.{anything}.txt"
     container:
-        "docker://miguelpmachado/bcftools:1.9-01"
+        "docker://mgibio/tabix:1.3.1"
     shell:
         """
-        bgzip -c {input} > {output.gz}
+        /opt/samtools/bin/bgzip -c {input} > {output.gz}
         tabix {output.gz}
         """
 
@@ -80,7 +81,7 @@ rule make_index:
         "docker://pegi3s/picard:2.21.5"
     shell:
         """
-        picard CreateSequenceDictionary R={input.circ_ref} O={output.fadict}
+        java -jar /usr/local/bin/picard/picard.jar CreateSequenceDictionary R={input.circ_ref} O={output.fadict}
         """
 rule make_edit_table:
     input:
@@ -288,7 +289,7 @@ rule homer_expanded:
         memory = 40000,
     benchmark: "benchmarks/homer.{stamp_sample_label}.{ctrl_sample_label}.txt"
     container:
-        "docker://howardxu520/skipper:R_4.1.3_1"
+        "docker://howardxu520/skipper:Homer_4.11"
     shell:
         """
         homer2 denovo -i {input.foreground} -b {input.background} -strand + -o {output}
@@ -333,11 +334,11 @@ rule homer_with_on_genome_coordinate:
         memory = 40000,
     benchmark: "benchmarks/homer_expanded_edits.{stamp_sample_label}.{ctrl_sample_label}.txt"
     container:
-        "docker://howardxu520/skipper:R_4.1.3_1"
+        "docker://howardxu520/skipper:Homer_4.11"
     shell:
         """
         findMotifsGenome.pl {input.stamp} \
-            hg38 \
+            {GENOMEFA} \
             {params.outdir} \
             -bg {input.ctrl} \
             -size given -rna -len 5,6,7,8,9 -noknown
