@@ -43,7 +43,7 @@ for key in ['STAMP', 'STAMP_control']:
         config['REF_fwd'] = 'C'
         config['ALT_fwd'] = 'T'
 
-for key in ['external_stamp_control']:
+for key in ['external_stamp_control', 'fit_overdispersion_from']:
     try:
         if config[key] is None:
             config[key] = {}
