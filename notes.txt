@@ -1,0 +1,5 @@
+snakemake -s SnakeMain.smk \
+    -j 12 \
+    --configfile config/tao_nextera17_sc.yaml \
+    --profile profiles/tscc2 \
+    -n

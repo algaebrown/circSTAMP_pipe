@@ -1,3 +1,4 @@
+This is a pipeline that trims, maps, detect circluar RNAs, call edits and also call RIPs in circles.
 # Basic usage
 ## Installation
 ### Snakemake:
@@ -33,6 +34,8 @@ On other server, you need to modify profiles/. Check snakemake documentation on 
         - Rnase: whether the sample is RNase treated or not.
         - None of these fields should contain special characters or space! NEVER!
         - `notebook/0_organize_file-Copy1.ipynb` This notebook helps you generate the manifest programatically.
+- If you are running STAMP experiment, see `config/tao_nextera_iter13` as an example. 
+- If you are running RIP/Polysome experiment, see `config/tao_nextera_iter11` as an example. 
 
 ## Output
 - `QC/` folder contain quality control statistics
@@ -41,43 +44,100 @@ On other server, you need to modify profiles/. Check snakemake documentation on 
 
 ## Advanced usage:
 # Builing Index
-`SnakeBuildIndex.py` does the job to build all indicies needed by CIRI2 and RNA-seq pipeline. After all indices are build, you need to make a config for CIRI file. see `ciriconfig_full.yaml` as an example.
+`SnakeBuildIndex.py` does the job to build all indicies needed by CIRI2 and RNA-seq pipeline. After all indices are build, you need to make a config for CIRI file. see `ciriconfig_full_tscc2.yaml` as an example.
 
-# Preprocessing
+# Preprocessing: Getting circles
+This is the most central part of this pipeline, which is to get circles. I didn't do much. Just trim and use CIRIquant pipeline.
 ![pipeline](main.svg)
 
 ```
-snakemake -s SnakeMain.py -j 12 --configfile config/tao.yaml --cluster "qsub -l walltime={params.run_time} -l nodes=1:ppn={params.cores} -e {params.error_out_file} -q home-yeo" --use-conda -n --dag output/APO-1-A.gtf output/bams/APO-1-A.Aligned.sortedByCoord.out.bam.bai output/APO-1-A.APO-1-R.gtf | dot -Tsvg > main.svg
+snakemake -s SnakeMain.smk --configfile config/tao_nextera17_EV.yaml --profile profiles/tscc2 --dag output/HepG2EV_2.gtf | awk '/digraph/{y=1;}y' | dot -Tsvg > main.svg
 ```
 
 Can be used to generate the flowchart.
 
-For a pair of polyA depleted (`-A`) samples and the RNase-treated (`-R`) samples, it tries to:
-1. Main RNA-seq pipeline: cutadapt trim adaptor, map to genomic sequences
-2. CIRI pipeline: run on both samples, then do RNase R correction.
+- Notice ciriQuant has RNaseR correction, but when I used it the quantification was weird. The differential expression calls will be entierly flipped. We decided to not use the correction.
 
-This will generate .bam files that can be fed into the STAMP pipeline.
+## normal RNA-seq preprocessing
+The pipeline also tries to do general RNA-seq (find linear RNA).
 
-
-
-
-
-# STAMP: Sailor pipeline
-## Running STAMP on regular RNA-seq (human genome mapped reads)
-generates the STAMP configs. `sailor.json`
+![pipeline](rnaseq.svg)
 ```
-python ../../output_to_json.py /home/hsher/scratch/circSTAMP_pipe/output/bams/ /home/hsher/gencode_coords/GRCh38.primary_assembly.genome.fa /home/hsher/scratch/circSTAMP_pipe/output/sailor/ /home/hsher/scratch/circSTAMP_pipe/output/sailor/sailor.json
+# to generate DAG
+snakemake -s SnakeMain.smk --configfile config/tao_nextera17_EV.yaml --profile profiles/tscc2 --dag output/bams/HepG2EV_2.Aligned.sortedByCoord.out.bam.bai | awk '/digraph/{y=1;}y' | dot -Tsvg > rnaseq.svg
 ```
-Then run according to STAMP's documentation.
 
-## Running STAMP on circular RNA mapped reads (experimental.)
-`sailor_circ.json` was edited by hand.
+# STAMP experiment:
+Due to the pseudocircular reference (duplicate the sequence twice to get the BSJ) generated to map circles, calling edits is complicated. I had to aggregate the edits from the two copies in the pseudocircular reference and then call edits. The code is implemented in `SnakeCircEdit.smk`. To trigger it, add these following fields to your config.
 
-CIRI2 find circular RNA reads by repeating the sequence twice (that creates the junction).
-However, reads aligned to different sides of the repeated sequence can carry edits that corresponds to the same position on circRNA. This part of the pipeline still lack a scripting part to edit the bam file so that the reads are repositioned to just 1 copy of the sequence.
+see `configs/circ_nextera_iter13.yaml`
+```
+STAMP: # the name for STAMP libraries
+  - RBM15_STAMP
+  - YTHDF2_STAMP
+  - U2AF2
+  - IGF2BP2
+  - YTHDF2
 
-## Commands to run
-see `/home/hsher/scratch/circSTAMP_pipe/run_sailor.sh` for the example 
+STAMP_control: # the name for APOBEC-only libraries
+  - APOBEC1only
+  - APOBEC1_1
+  - APOBEC1_2
 
-# Analyzing STAMP pipeline output
-`SnakeSailorAnalysis` does the job to find motif and annotate region, transcript names in STAMP edits.
+REF_fwd: C # C to T # Define what edit you are looking for
+ALT_fwd: T
+
+external_stamp_control: # it is possible to use APOBEC edits in a different folder
+   - another_APOBEC_library
+      prefix: /PATH/TO/APOBEC_CIRCLE_STAMP/WORKDIR
+      sample_name: the_other_apobed
+
+```
+Here is what it is doing. It finds edits, and use APOBEC significant edits as background, to find motif around STAMP edits.
+
+![pipeline](stamp.svg)
+```
+# to generate DAG
+snakemake -s SnakeMain.smk --configfile config/tao_nextera13.yaml --profile profiles/tscc2 --dag output/edits/homer/YTHDF2.APOBEC1_1.homer | awk '/digraph/{y=1;}y' | dot -Tsvg > stamp.svg
+```
+
+It uses the alignment generated from the CIRIquant pipeline and find edit in it. Here are some difference from the normal sailor pipeline
+- `edit_aggregate_pseudoreference`: Because the alignment is performed on the pseudocircular reference, the same exon is copied twice making 1 single position in the circle appear twice in an alignment file. Counts are aggregated from the two positions prior to testing.
+- `edit_pick_from_the_right_strand`: The sequencing protocol is not strand specific, so we only picked edits from the strand where the parent gene is.
+
+# RIP experiment
+The pipeline also includes code to call enriched circles. To trigger it to run, add the following:
+
+see `configs/circ_nextera_iter11.yaml`
+
+```
+CIRCRIP_PATH: /home/hsher/bin/circRIP # where you downloaded https://github.com/bioinfolabwhu/circRIP/ # leave blank if you have replicates
+
+RIP_comparison: # Here you specify what to use a background and what to use as input, these names have to be in manifest['Sample']
+  monosome1:
+    ip: PP_Monosome1
+    in: PP_Input1
+  monosome2:
+    ip: PP_Monosome2
+    in: PP_Input2
+  polysome1:
+    ip: PP_Polysome1
+    in: PP_Input1
+  polysome2:
+    ip: PP_Polysome2
+    in: PP_Input2
+
+fit_overdispersion_from:
+  - PP_Input1
+  - PP_Input2
+```
+- If you have two replicate of Input or RIP, you can use my scripts, which will use replicates to find the dispersion and call circles. This calling method can reproduce several known characteristics of translated circles etc.
+- If you have only 1  replicate, you will have to use CIRCRIP. Download the repository to trigger it to run. I don't recommend doing this. Using this software we were not able to find reproducible enriched circles. 
+
+## My way of calling enriched RIP circles
+![pipeline](myrip.svg)
+```
+# to generate DAG
+snakemake -s SnakeMain.smk --configfile config/tao_nextera11.yaml --profile profiles/tscc2 --dag "output/RIP/Mono1.IN1.csv" | awk '/digraph/{y=1;}y' | dot -Tsvg > myrip.svg
+```
+
