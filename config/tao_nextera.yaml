@@ -18,7 +18,7 @@ READ1_ADAPTOR: /home/hsher/projects/circSTAMP_pipe/input/nextera.fasta
 READ2_ADAPTOR:  /home/hsher/projects/circSTAMP_pipe/input/nextera.fasta
 
 # settings for Ciri
-CIRICONFIG: /home/hsher/projects/circSTAMP_pipe/ciriconfig_full.yaml
+CIRICONFIG: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/ciriconfig_full_tscc2.yaml
 LIBRARY_TYPE: 2 #Library type, 0: unstranded, 1: read1 match the sense strand, 2: read1 match the antisense strand (default: 0)
 
 # ANALYSIS # cut -f 1,2 genome.fa.fai > chrom.sizes
