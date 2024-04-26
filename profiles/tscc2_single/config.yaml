@@ -6,7 +6,7 @@ skip-script-cleanup: true
 nolock: true
 keep-going: true
 use-singularity: true
-singularity-prefix: /tscc/lustre/scratch/hsher/singularity/
+singularity-prefix: /tscc/lustre/ddn/scratch/hsher/singularity/
 singularity-args: "--bind /tscc"
 use-conda: true
 conda-prefix: "/tscc/nfs/home/hsher/snakeconda"

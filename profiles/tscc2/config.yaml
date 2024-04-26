@@ -7,7 +7,7 @@ nolock: true
 keep-going: true
 cluster: "sbatch -t {params.run_time} -e {params.error_out_file} -o stdout/{rule} -p condo -q condo -A csd792 --tasks-per-node {params.cores} --job-name {rule} --mem {params.memory}"
 use-singularity: true
-singularity-prefix: /tscc/lustre/scratch/hsher/singularity/
+singularity-prefix: /tscc/lustre/ddn/scratch/hsher/singularity/
 singularity-args: "--bind /tscc"
 use-conda: true
 conda-prefix: "/tscc/nfs/home/hsher/snakeconda"
