@@ -1,6 +1,7 @@
-# Cell line specific circles, iteration 2
-workdir: /tscc/lustre/scratch/hsher/circ_nextera_iter13
-menifest: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/notebook/nextera_iter5_13_RBM15_U2AF_STAMP.csv
+# human breast cancer growing on nude mice
+comment: Tao did EV experiment Sam Landry's cell line and placenta
+workdir: /tscc/lustre/ddn/scratch/hsher/nextera_iter17_singlecell
+menifest: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/notebook/nextera_iter17_singlecell.csv
 
 GFF: /tscc/nfs/home/hsher/gencode_coords/gencode.v35.basic.annotation.gff3  
 GTF: /tscc/nfs/home/hsher/gencode_coords/gencode.v35.basic.annotation.gtf  
@@ -36,19 +37,7 @@ fit_overdispersion_from:
 
 # STAMP
 STAMP:
-  - RBM15_STAMP
-  - YTHDF2_STAMP
-  - U2AF2
-  - IGF2BP2
-  - YTHDF2
 
 STAMP_control:
-  - APOBEC1only
-  - APOBEC1_1
-  - APOBEC1_2
-
-
-REF_fwd: C # C to T
-ALT_fwd: T
 
 external_stamp_control:

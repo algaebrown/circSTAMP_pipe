@@ -1,6 +1,7 @@
-# Cell line specific circles, iteration 2
-workdir: /tscc/nfs/home/hsher/scratch/circ_nextera_iter13
-menifest: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/notebook/nextera_iter5_13_RBM15_U2AF_STAMP.csv
+# human breast cancer growing on nude mice
+comment: Tao did EV experiment Sam Landry's cell line and placenta
+workdir: /tscc/lustre/ddn/scratch/hsher/circ_nextera_iter17_SG
+menifest: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/notebook/nextera_iter17_SG.csv
 
 GFF: /tscc/nfs/home/hsher/gencode_coords/gencode.v35.basic.annotation.gff3  
 GTF: /tscc/nfs/home/hsher/gencode_coords/gencode.v35.basic.annotation.gtf  
@@ -17,6 +18,7 @@ READ2_ADAPTOR:  /tscc/nfs/home/hsher/projects/circSTAMP_pipe/input/nextera.fasta
 
 # settings for Ciri
 CIRICONFIG: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/ciriconfig_full_tscc2.yaml
+CIRCRIP_PATH: /home/hsher/bin/circRIP
 LIBRARY_TYPE: 2 #Library type, 0: unstranded, 1: read1 match the sense strand, 2: read1 match the antisense strand (default: 0)
 
 # ANALYSIS # cut -f 1,2 genome.fa.fai > chrom.sizes
@@ -28,25 +30,14 @@ EXPAND_LEN: 30
 
 # circRIP
 SCRIPT_PATH: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/scripts
-CIRCRIP_PATH: /tscc/nfs/home/hsher/bin/circRIP # where you downloaded https://github.com/bioinfolabwhu/circRIP/
+
 
 RIP_comparison: # Here you specify what to use a background and what to use as input, these names have to be in manifest['Sample']
 fit_overdispersion_from: 
 
 # STAMP
 STAMP:
-  - RBM15_STAMP
-  - YTHDF2_STAMP
-  - U2AF2
-  - IGF2BP2
-  - YTHDF2
 
 STAMP_control:
-  - APOBEC1only
-  - APOBEC1_1
-  - APOBEC1_2
-
-REF_fwd: C # C to T
-ALT_fwd: T
 
 external_stamp_control:

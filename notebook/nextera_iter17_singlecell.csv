@@ -1,0 +1,4 @@
+,fastq1,fastq2,Sample,Rnase
+0,/tscc/nfs/home/mgosztyl/seqdata/20240418_seq_results/igm-storage.ucsd.edu/240415_LH00444_0092_A227CY2LT4/FASTQ/sc_1000pg_S5_L004_R1_001.fastq.gz,/tscc/nfs/home/mgosztyl/seqdata/20240418_seq_results/igm-storage.ucsd.edu/240415_LH00444_0092_A227CY2LT4/FASTQ/sc_1000pg_S5_L004_R2_001.fastq.gz,sc_1000pg,True
+1,/tscc/nfs/home/mgosztyl/seqdata/20240418_seq_results/igm-storage.ucsd.edu/240415_LH00444_0092_A227CY2LT4/FASTQ/sc_100pg_S6_L004_R1_001.fastq.gz,/tscc/nfs/home/mgosztyl/seqdata/20240418_seq_results/igm-storage.ucsd.edu/240415_LH00444_0092_A227CY2LT4/FASTQ/sc_100pg_S6_L004_R2_001.fastq.gz,sc_100pg,True
+2,/tscc/nfs/home/mgosztyl/seqdata/20240418_seq_results/igm-storage.ucsd.edu/240415_LH00444_0092_A227CY2LT4/FASTQ/sc_10pg_S7_L004_R1_001.fastq.gz,/tscc/nfs/home/mgosztyl/seqdata/20240418_seq_results/igm-storage.ucsd.edu/240415_LH00444_0092_A227CY2LT4/FASTQ/sc_10pg_S7_L004_R2_001.fastq.gz,sc_10pg,True
