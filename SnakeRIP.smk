@@ -16,6 +16,7 @@ rule gtf_to_circ:
         error_out_file = "error_files/convert_file.{sample_label}",
         run_time = "20:00",
         cores = "1",
+        memory = 16000,
     conda:
         "envs/metadensity.yaml"
     shell:
@@ -39,6 +40,7 @@ rule run_circ_RIP:
         error_out_file = "error_files/circRIP.{ip_sample_label}.{in_sample_label}",
         run_time = "12:00:00",
         cores = "2",
+        memory = 16000,
     conda:
         "envs/circRIP.yaml"
     shell:
@@ -66,7 +68,8 @@ rule prepare_motif_analysis:
         error_out_file = "error_files/circRIP.{ip_sample_label}.{in_sample_label}",
         run_time = "1:00:00",
         cores = "1",
-        prefix = "output/circRIP/homer/{ip_sample_label}_vs_{in_sample_label}"
+        prefix = "output/circRIP/homer/{ip_sample_label}_vs_{in_sample_label}",
+        memory = 8000,
     shell:
         """
         python {SCRIPT_PATH}/prepare_homer.py \
@@ -85,6 +88,7 @@ rule homer:
         error_out_file = "error_files/circRIP_homer.{ip_sample_label}.{in_sample_label}",
         run_time = "8:00:00",
         cores = "1",
+        memory = 8000,
     container:
         "docker://howardxu520/skipper:Homer_4.11"
     shell:
@@ -101,6 +105,7 @@ rule get_counts:
         error_out_file = "error_files/make_count_table",
         run_time = "0:30:00",
         cores = "1",
+        memory = 8000,
     conda:
         "envs/metadensity.yaml"
     shell:
@@ -119,7 +124,8 @@ rule fit_overdispersion:
         error_out_file = "error_files/fit_overdispersion",
         run_time = "0:30:00",
         cores = "1",
-        reps = ','.join(config['fit_overdispersion_from'])
+        reps = ','.join(config['fit_overdispersion_from']),
+        memory = 8000,
     container:
         "docker://howardxu520/skipper:R_4.1.3_1"
     shell:
@@ -139,7 +145,8 @@ rule call_enriched_RIP:
     params:
         error_out_file = "error_files/call_RIP.{ip_sample_label}.{in_sample_label}",
         run_time = "0:30:00",
-        cores = "1"
+        cores = "1",
+        memory = 8000,
     conda:
         "envs/metadensity.yaml"
     shell:

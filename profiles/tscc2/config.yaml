@@ -7,9 +7,13 @@ nolock: true
 keep-going: true
 cluster: "sbatch -t {params.run_time} -e {params.error_out_file} -o stdout/{rule} -p condo -q condo -A csd792 --tasks-per-node {params.cores} --job-name {rule} --mem {params.memory}"
 use-singularity: true
-singularity-prefix: /tscc/lustre/ddn/scratch/hsher/singularity/
-singularity-args: "--bind /tscc"
+singularity-prefix: /tscc/projects/ps-yeolab4/software/circstamp/c89ea98/bin/.singularity
+singularity-args: "--bind /tscc --env PYTHON_EGG_CACHE=/tscc/lustre/ddn/scratch/bay001"
 use-conda: true
-conda-prefix: "/tscc/nfs/home/hsher/snakeconda"
+conda-prefix: "/tscc/projects/ps-yeolab4/software/circstamp/c89ea98/bin/snakeconda"
 conda-frontend: mamba
 jobs: 30
+conda-base-path: /tscc/projects/ps-yeolab4/software/miniconda_tscc2/
+rerun-incomplete: true
+default-resources: [cpus=1, mem_mb=16000, runtime=60, nodes=1, partition=condo]
+
