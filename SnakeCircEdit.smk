@@ -18,7 +18,7 @@ rule pileup:
         memory = 40000,
     benchmark: "benchmarks/pileup.{sample_label}.txt"
     container:
-        "docker://brianyee/bcftools:1.17"
+        "docker://miguelpmachado/bcftools:1.9-01"
     shell:
         """
         bcftools mpileup -f {input.circ_ref} {input.bam} \
