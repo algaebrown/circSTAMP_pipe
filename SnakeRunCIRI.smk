@@ -1,8 +1,10 @@
 import pandas as pd
+import warnings
 try:
     manifest = pd.read_csv(config['menifest'])
 except Exception as e:
     print(e)
+locals().update(config)
 
 # 16 core, 4GB is sufficient to run 4 threads but takes >24hr
 # 16 core, 16GB isn't sufficient to run 16 threads (Unable to flush input output)
@@ -132,5 +134,145 @@ rule gc_cotent:
         """
         cat {input.beds} | sort -k1,1 -k2,2n -k3,3n | uniq > {output.megabed}
         bedtools nuc -s -fi {params.genome} -bed {output.megabed} > {output.nuc}
+        """
+
+################## Differential Expression ##################
+# This only works for a single replicate shit
+rule run_ciri_de_compare_unadjusted:
+    input:
+        gtf_control = "output/{sample_label_control}.gtf",
+        gtf_case = "output/{sample_label_case}.gtf"
+    output:
+        "output/ciri_de/{sample_label_control}.{sample_label_case}.gtf.tsv"
+    params:
+        error_out_file = "error_files/ciri.de.{sample_label_control}.{sample_label_case}",
+        run_time = "8:00:00",
+        cores = "1",
+        memory = 320000,
+    container:
+        "docker://mortreux/ciriquant:v1.1.2"
+    shell:
+        """
+        CIRI_DE -n {input.gtf_control} \
+        -c {input.gtf_case} \
+        -o {output} 
+        """
+
+def find_file(paths, sample_label):
+    for path in paths:
+        fname = Path(path)/f"output/{sample_label}.gtf"
+        fname2 = Path(path)/f"output/gene/{sample_label}_out.gtf"
+        print(fname, fname2)
+        if fname.exists() and fname2.exists():
+            return fname, fname2
+    raise Exception(f'Unable to find GTF and _out.gtf for {sample_label}')
+    
+
+
+
+# All the rest makes replicate differential expressions
+rule make_list:
+    input:
+        lambda wildcards: expand("output/{sample_label}.gtf", 
+        sample_label =  [s for s in config['circ_de'][wildcards.comparison]['case']+config['circ_de'][wildcards.comparison]['ctrl']
+        if s in sample_labels
+        ]),
+        lambda wildcards: expand("output/gene/{sample_label}_genes.list", 
+        sample_label = [ s for s in config['circ_de'][wildcards.comparison]['case']+config['circ_de'][wildcards.comparison]['ctrl']
+        if s in sample_labels
+        ])
+    output:
+        lst="output/circ_de_reps/{comparison}.lst",
+        sample_lst="output/circ_de_reps/{comparison}.samplegene.lst"
+    params:
+        error_out_file = "error_files/ciri.de.{comparison}",
+        run_time = "10:00",
+        cores = "1",
+        memory = 1000
+    run:
+        import pandas as pd
+        lst_df = []
+        lst_sample_gene_df  = []
+        for i,sample_label in enumerate(config['circ_de'][wildcards.comparison]['case']):
+            fname, fname2 = find_file(config['external_de_paths']+[config['workdir']], sample_label)
+            lst_df.append([f'case_rep{i+1}', fname, 'T'])
+            lst_sample_gene_df.append([f'case_rep{i+1}', fname2])
+                        
+        for i,sample_label in enumerate(config['circ_de'][wildcards.comparison]['ctrl']):
+            fname, fname2 = find_file(config['external_de_paths']+[config['workdir']], sample_label)
+            lst_df.append([f'ctrl_rep{i+1}', fname, 'C'])
+            lst_sample_gene_df.append([f'ctrl_rep{i+1}', fname2])
+        
+        df = pd.DataFrame(lst_df, columns = ['sample', 'path', 'group'])
+        df_stringtie = pd.DataFrame(lst_sample_gene_df, columns = ['sample', 'path'])
+        df.to_csv(output.lst, sep = '\t', header = False, index = False)
+        df_stringtie.to_csv(output.sample_lst, sep = '\t', header = False, index = False)
+
+
+rule prep_ciriquant_de:
+    input:
+        lst = 'output/circ_de_reps/{comparison}.lst'
+    output:
+        lib_info = 'output/circ_de_reps/{comparison}.csv',
+        circ = 'output/circ_de_reps/{comparison}.circ.csv',
+        bsj = 'output/circ_de_reps/{comparison}.bsj.csv',
+        ratio = 'output/circ_de_reps/{comparison}.ratio.csv',
+    params:
+        error_out_file = "error_files/ciri_de.{comparison}",
+        run_time = "2:00:00",
+        cores = "1",
+        memory = "160000"
+    container:
+        "docker://mortreux/ciriquant:v1.1.2"
+    shell:
+        """
+        prep_CIRIquant -i {input} \
+            --lib {output.lib_info}\
+            --circ {output.circ} \
+            --bsj {output.bsj} \
+            --ratio {output.ratio}
+        """
+
+rule prep_stringtie:
+    input:
+        lst = 'output/circ_de_reps/{comparison}.samplegene.lst'
+    output:
+        genecnt = 'output/circ_de_reps/{comparison}.genecount_matrix.csv',
+    params:
+        error_out_file = "error_files/ciri_de_rep_stringtie.{comparison}",
+        run_time = "2:00:00",
+        cores = "1",
+        memory = "160000"
+    container:
+        "docker://mortreux/ciriquant:v1.1.2"
+    shell:
+        """
+        python {SCRIPT_PATH}/prepDE.py \
+            -i {input} \
+            -g {output.genecnt}
+        """
+
+# this env is hard to install as hell
+rule run_ciri_de_compare_unadjusted:
+    input:
+        lib_info = rules.prep_ciriquant_de.output.lib_info,
+        bsj = rules.prep_ciriquant_de.output.bsj,
+        gene = rules.prep_stringtie.output.genecnt
+    output:
+        circ = "output/circ_de_reps/{comparison}.gtf.tsv",
+    params:
+        error_out_file = "error_files/ciri_de_rep.{comparison}",
+        run_time = "6:00:00",
+        cores = "1",
+        memory = "160000"
+    container:
+        "docker://algaebrown/ciriquant_edger:1.1.2"
+    shell:
+        """
+        /opt/conda/lib/python2.7/site-packages/libs/CIRI_DE.R \
+            --lib {input.lib_info} \
+            --bsj {input.bsj} \
+            --gene {input.gene} \
+            --out {output.circ} 
         """
 

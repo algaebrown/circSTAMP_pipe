@@ -82,6 +82,20 @@ else:
     comparisons = []
     comparisons2 = []
 
+def get_circ_differential_expression(config):
+    if 'circ_de' not in config.keys():
+        return []
+    else:
+        outputs = []
+        print(config['circ_de'])
+        for comparison in config['circ_de']:
+            if len(config['circ_de'][comparison]['case'])==1 and len(config['circ_de'][comparison]['ctrl'])==1:
+                sample_label_case = config['circ_de'][comparison]['case'][0]
+                sample_label_control = config['circ_de'][comparison]['ctrl'][0]
+                outputs.append(f"output/ciri_de/{sample_label_control}.{sample_label_case}.gtf.tsv")
+            else:
+                outputs.append(f"output/circ_de_reps/{comparison}.gtf.tsv")
+        return outputs
 
 rule all:
     input:
@@ -101,13 +115,16 @@ rule all:
         'output/circle_summary/FSJ_counts.csv',
         'output/circle_summary/junction_ratio.csv',
         
+        # differential expression
+        get_circ_differential_expression(config),
         # RIP (circRIP is not good)
         # expand("output/circRIP/{comparisons}", comparisons = comparisons) if CIRCRIP_PATH else [],
         # expand("output/circRIP/homer/{comparisons}.homer", comparisons = comparisons) if CIRCRIP_PATH else [],
         expand("output/RIP/{comparisons}.csv", comparisons = comparisons2),
         # STAMP
+
         expand("output/edits/{sample_label}.final_edit_score.fa"
-        , sample_label = sample_labels),
+        , sample_label = config['STAMP']+config['STAMP_control']),
         expand("output/edits/homer/{stamp_sample_label}.{ctrl_sample_label}.homer",
         stamp_sample_label = config['STAMP'],
         ctrl_sample_label = config['STAMP_control']+list(config['external_stamp_control'].keys())
