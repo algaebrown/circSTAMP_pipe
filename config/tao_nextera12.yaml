@@ -1,34 +1,34 @@
 # Cell line specific circles, iteration 2
-workdir: /home/hsher/scratch/circ_nextera_iter12
-menifest: /home/hsher/projects/circSTAMP_pipe/notebook/nextera_iter12_Cellline.csv
+workdir: /tscc/nfs/home/hsher/scratch/circ_nextera_iter12
+menifest: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/notebook/nextera_iter12_Cellline.csv
 
-GFF: /home/hsher/gencode_coords/gencode.v35.basic.annotation.gff3  
-GTF: /home/hsher/gencode_coords/gencode.v35.basic.annotation.gtf  
-GENOMEFA: /home/hsher/gencode_coords/GRCh38.primary_assembly.genome.fa
-GENOMEFAI: /home/hsher/gencode_coords/GRCh38.primary_assembly.genome.fa.fai
-BWA_INDEX: /projects/ps-yeolab5/hsher/Tao_circSTAMP/bwa_gencode35
-HISAT_INDEX: /projects/ps-yeolab5/hsher/Tao_circSTAMP/hisat_gencode35
-STAR_INDEX: /projects/ps-yeolab5/hsher/Tao_circSTAMP/star_2_7_gencode35
+GFF: /tscc/nfs/home/hsher/gencode_coords/gencode.v35.basic.annotation.gff3  
+GTF: /tscc/nfs/home/hsher/gencode_coords/gencode.v35.basic.annotation.gtf  
+GENOMEFA: /tscc/nfs/home/hsher/gencode_coords/GRCh38.primary_assembly.genome.fa
+GENOMEFAI: /tscc/nfs/home/hsher/gencode_coords/GRCh38.primary_assembly.genome.fa.fai
+BWA_INDEX: /tscc/projects/ps-yeolab5/hsher/Tao_circSTAMP/bwa_gencode35
+HISAT_INDEX: /tscc/projects/ps-yeolab5/hsher/Tao_circSTAMP/hisat_gencode35
+STAR_INDEX: /tscc/projects/ps-yeolab5/hsher/Tao_circSTAMP/star_2_7_gencode35
 INDEX_NAME: HG38
 
 
-READ1_ADAPTOR: /home/hsher/projects/circSTAMP_pipe/input/nextera.fasta
-READ2_ADAPTOR:  /home/hsher/projects/circSTAMP_pipe/input/nextera.fasta
+READ1_ADAPTOR: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/input/nextera.fasta
+READ2_ADAPTOR:  /tscc/nfs/home/hsher/projects/circSTAMP_pipe/input/nextera.fasta
 
 # settings for Ciri
 CIRICONFIG: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/ciriconfig_full_tscc2.yaml
 LIBRARY_TYPE: 2 #Library type, 0: unstranded, 1: read1 match the sense strand, 2: read1 match the antisense strand (default: 0)
 
 # ANALYSIS # cut -f 1,2 genome.fa.fai > chrom.sizes
-CHROM_SIZE: /home/hsher/gencode_coords/GRCh38.primary_assembly.chrom.sizes
+CHROM_SIZE: /tscc/nfs/home/hsher/gencode_coords/GRCh38.primary_assembly.chrom.sizes
 ANNOTATOR_SPECIES: GRCh38
-GTFDB: /home/hsher/gencode_coords/gencode.v35.gtf.db
+GTFDB: /tscc/nfs/home/hsher/gencode_coords/gencode.v35.gtf.db
 edit_thres: 0.9999
 EXPAND_LEN: 30
 
 # circRIP
-SCRIPT_PATH: /home/hsher/projects/circSTAMP_pipe/scripts
-CIRCRIP_PATH: /home/hsher/bin/circRIP # where you downloaded https://github.com/bioinfolabwhu/circRIP/
+SCRIPT_PATH: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/scripts
+CIRCRIP_PATH: /tscc/nfs/home/hsher/bin/circRIP # where you downloaded https://github.com/bioinfolabwhu/circRIP/
 
 
 RIP_comparison: # Here you specify what to use a background and what to use as input, these names have to be in manifest['Sample']

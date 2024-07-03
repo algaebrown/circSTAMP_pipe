@@ -1,6 +1,7 @@
-# Vaz a different kit like nextera
-workdir: /tscc/lustre/scratch/hsher/circ_nextera_iter15_vaz
-menifest: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/notebook/nextera_iter15_Vaz.csv
+# human breast cancer growing on nude mice
+comment: Louise makes more EV with pre-eclampsia
+workdir: /tscc/lustre/ddn/scratch/hsher/circ_nextera_iter18_EV
+menifest: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/notebook/nextera_iter18_placental_ev.csv
 
 GFF: /tscc/nfs/home/hsher/gencode_coords/gencode.v35.basic.annotation.gff3  
 GTF: /tscc/nfs/home/hsher/gencode_coords/gencode.v35.basic.annotation.gtf  
@@ -12,8 +13,8 @@ STAR_INDEX: /tscc/projects/ps-yeolab5/hsher/Tao_circSTAMP/star_2_7_gencode35
 INDEX_NAME: HG38
 
 
-READ1_ADAPTOR: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/input/vaz.fasta
-READ2_ADAPTOR:  /tscc/nfs/home/hsher/projects/circSTAMP_pipe/input/vaz.fasta
+READ1_ADAPTOR: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/input/nextera.fasta
+READ2_ADAPTOR:  /tscc/nfs/home/hsher/projects/circSTAMP_pipe/input/nextera.fasta
 
 # settings for Ciri
 CIRICONFIG: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/ciriconfig_full_tscc2.yaml
@@ -21,7 +22,7 @@ CIRCRIP_PATH: /home/hsher/bin/circRIP
 LIBRARY_TYPE: 2 #Library type, 0: unstranded, 1: read1 match the sense strand, 2: read1 match the antisense strand (default: 0)
 
 # ANALYSIS # cut -f 1,2 genome.fa.fai > chrom.sizes
-CHROM_SIZE: do 
+CHROM_SIZE: /tscc/nfs/home/hsher/gencode_coords/GRCh38.primary_assembly.chrom.sizes
 ANNOTATOR_SPECIES: GRCh38
 GTFDB: /tscc/nfs/home/hsher/gencode_coords/gencode.v35.gtf.db
 edit_thres: 0.9999
@@ -40,3 +41,28 @@ STAMP:
 STAMP_control:
 
 external_stamp_control:
+
+# differential expression and shit
+circ_de:
+  preeclampsia_vs_healthy:
+    case:
+      - '3889'
+      - '3807'
+      - '3904'
+    ctrl:
+      - 3779_EV
+      - 3833_EV
+      - 3845_EV
+  PLAP:
+    case:
+      - 3833_B1
+      - 3833_B2
+      - 3833_B3
+    ctrl:
+      - 3833_FT1
+      - 3833_FT2
+      - 3833_FT3
+
+
+external_de_paths:
+  - /tscc/nfs/home/hsher/ps-yeolab5/circ_outputs/

@@ -4,7 +4,7 @@
 workdir: /tscc/nfs/home/hsher/scratch/circ_nextera_iter2
 menifest: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/notebook/nextera_iter2.csv
 
-GTF: /tscc/nfs/home/hsher/gencode_coords/gencode.v35.basic.annotation.gff3  
+GTF: /tscc/nfs/home/hsher/gencode_coords/gencode.v35.basic.annotation.gtf  
 GENOMEFA: /tscc/nfs/home/hsher/gencode_coords/GRCh38.primary_assembly.genome.fa
 GENOMEFAI: /tscc/nfs/home/hsher/gencode_coords/GRCh38.primary_assembly.genome.fa.fai
 BWA_INDEX: /tscc/projects/ps-yeolab5/hsher/Tao_circSTAMP/bwa_gencode35

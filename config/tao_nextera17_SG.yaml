@@ -41,3 +41,21 @@ STAMP:
 STAMP_control:
 
 external_stamp_control:
+
+# differential expression and shit
+circ_de:
+  SG_vs_outside:
+    case:
+      - SG_rep1
+      - SG_rep2
+    ctrl:
+      - stress_rep1
+      - stress_rep2
+  stress_vs_unstress:
+    case:
+      - stress_rep1
+      - stress_rep2
+    ctrl:
+      - nostress_rep1
+      - nostress_rep2
+

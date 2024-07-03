@@ -1,5 +1,5 @@
 # Synapse mouse
-workdir: /tscc/lustre/scratch/hsher/circ_nextera_iter15
+workdir: /tscc/lustre/ddn/scratch/hsher/circ_nextera_iter15
 menifest: /tscc/nfs/home/hsher/projects/circSTAMP_pipe/notebook/nextera_iter15_synapse.csv
 
 GFF: /tscc/nfs/home/hsher/gencode_coords/gencode.vM25.basic.annotation.gff3
