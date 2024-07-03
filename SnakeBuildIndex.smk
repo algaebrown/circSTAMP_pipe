@@ -1,8 +1,8 @@
 """
-snakemake -s BuildIndex.smk \
+snakemake -s SnakeBuildIndex.smk \
     -j 4 \
-    --configfile config/tao_nextera15.yaml \
-    --profile profiles/tscc2_single \
+    --configfile config/tao_nextera18_placental_EV.yaml \
+    --profile profiles/tscc2 \
     -n
 """
 
@@ -67,7 +67,7 @@ rule build_star_index:
         error_out_file = "error_files/starbuild",
     benchmark: "benchmarks/starindex.txt"
     container:
-        "docker://howardxu520/skipper:samtools_1.17"
+       "docker://howardxu520/skipper:star_2.7.10b"
     shell:
         """
         STAR \
