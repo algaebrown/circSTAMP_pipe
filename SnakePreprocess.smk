@@ -97,7 +97,7 @@ rule align_reads:
         stat = "output/bams/{sample_label}.Log.final.out",
     params:
         error_out_file = "error_files/star.{sample_label}",
-        run_time = "03:40:00",
+        run_time = "06:40:00",
         cores = "4",
         memory = "160000",
         job_name = "align_reads",
